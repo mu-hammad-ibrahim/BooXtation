@@ -1,0 +1,29 @@
+﻿@model BookXtation.DAL.Models.Data.Category
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; // Specify the layout for the view
+    ViewBag.Title = "Delete Category"; // Set the title for the view
+}
+
+<h2>Delete Category</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+<div>
+    <h4>@Model.Name</h4>
+    <p>Are you sure you want to delete this Category?</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Category_ID" />
+    <input type="submit" value="Delete" class="btn btn-danger" />
+    <a class="btn btn-secondary" asp-controller="admin"  asp-action="ViewCategories">Cancel</a>
+    <!-- Back to List button -->
+    <a class="btn btn-outline-primary" asp-controller="admin"  asp-action="ViewCategories" >Back to All Categories</a>
+   
+    </a>
+</form>

@@ -1,0 +1,233 @@
+﻿@model IQueryable<FavouriteBooks>
+
+@{
+    ViewData["Title"] = "My Wishlist";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+
+@if(Model.Any()){
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+                <div class="product-card shadow-sm">
+                    <!-- Book Cover Image -->
+                    <div class="card-banner img-holder" style="--width: 384; --height: 480; position: relative;">
+                        <img src="~/files/images/@item.Book.Cover_Image" width="384" height="480" style="object-fit: contain;" loading="lazy" alt="@item.Book.Title"
+                             class="img-cover rounded">
+
+                        <!-- Stock Badge -->
+                        @if (item.Book.Stock == 0)
+                        {
+                            <span class="badge bg-danger text-white" style="position: absolute; top: 10px; left: 10px;">OUT OF STOCK</span>
+                        }
+                        else if (item.Book.Stock > 10)
+                        {
+                            <span class="badge bg-success text-white" style="position: absolute; top: 10px; left: 10px;">AVAILABLE</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-white" style="position: absolute; top: 10px; left: 10px;">@item.Book.Stock Books Left</span>
+                        }
+
+                        <div class="card-action">
+                            <!-- Quick View -->
+                            <a class="action-btn" aria-label="quick view" title="Quick View" asp-action="Details" asp-controller="Book" asp-route-id="@item.Book_ID">
+                                <ion-icon name="eye-outline" aria-hidden="true"></ion-icon>
+                            </a>
+
+                            <a class="action-btn cur-pointer" id="add-to-wishlist" aria-label="add to wishlist" title="Add to Wishlist"
+                               onclick="AddToWish(@item.Book_ID)">
+                                <ion-icon name="heart-outline" class="add-to-wishlist"
+                                          id="add-to-wishlist-@item.Book_ID" aria-hidden="true" data-Book_ID="@item.Book_ID"></ion-icon>
+                            </a>
+
+                            <a class="action-btn cur-pointer" id="add-to-cart" aria-label="add to cart" title="Add to Cart"
+                               onclick="AddItem(@item.Book_ID)">
+                                <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Book Details -->
+                    <div class="card-content mt-3">
+                        <h3>
+                            <a asp-action="Details" asp-route-id="@item.Book_ID" class="card-title fs-4" title="@item.Book.Title">
+                                @(item.Book.Title.Length > 22 ? item.Book.Title.Substring(0, 18) + "..." : item.Book.Title)
+                            </a>
+                        </h3>
+
+
+
+                        <data class="card-price" value="@item.Book.Price"><sup>EGP</sup>@item.Book.Price</data>
+                        <span class="text-decoration-line-through fw-bold" value="@item.Book.ActualPrice">EGP @item.Book.ActualPrice</span>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+}
+else
+{
+    <div class="container cart-empty my-5 py-5">
+        <div class="text-center my-5">Your WishList Is <span>Empty</span> </div>
+    </div>
+}
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+@section Scripts {
+    <script>
+        function AddItem(Book_ID) {
+            $.ajax({
+                url: '/Cart_Item/addBookToCart_items',
+                type: 'POST',
+                data: { Book_ID: Book_ID },
+                success: function (response) {
+                    if (response.success) {
+                        console.log(response);
+                    } else {
+                        console.log('failed');
+                    }
+                },
+                error: function () {
+                    alert("Failed to update quantity.");
+                }
+            });
+        }
+
+        function AddToWish(Book_ID) {
+
+            $.ajax({
+                url: '/FavouriteBooks/AddBookToFavouriteList',
+                type: 'POST',
+                data: { Book_ID: Book_ID },
+                success: function (response) {
+
+                    if (response.massage == "added") {
+                        $(`#add-to-wishlist-${Book_ID}`).addClass('text-danger');
+                        $(`#add-to-wishlist-${Book_ID}`).attr('name', "heart");
+                    } 
+                    else {
+                        $(`#add-to-wishlist-${Book_ID}`).removeClass('text-danger');
+                        $(`#add-to-wishlist-${Book_ID}`).attr('name', "heart-outline"); 
+                            location.reload();
+                    }
+                },
+
+                error: function () {
+                    console.log("Not Authorize");
+                }
+            });
+        };
+        ChecKHeart();
+        function ChecKHeart() {
+            $('.add-to-wishlist').each(function (e) {
+                var Book_ID = $(this).data("book_id");
+                $.ajax({
+                    url: '/FavouriteBooks/CheckFavouriteForHeartDesign',
+                    type: 'POST',
+                    data: { Book_ID: Book_ID },
+                    success: function (response) {
+
+                        if (response.massage == "added") {
+                            $(`#add-to-wishlist-${Book_ID}`).addClass('text-danger');
+                            $(`#add-to-wishlist-${Book_ID}`).attr('name', "heart");
+                            console.log("added")
+                        }
+                        
+                    },
+
+                    error: function () {
+                        console.log("Not Authorize");
+                    }
+                });
+            })
+
+        };
+
+        $(document).ready(function () {
+            $('.collapse').on('show.bs.collapse', function () {
+                $(this).prev().find('.fas').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+            }).on('hide.bs.collapse', function () {
+                $(this).prev().find('.fas').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+            });
+        });
+
+
+        document.getElementById('minPrice').addEventListener('input', function () {
+            document.getElementById('minPriceValue').textContent = this.value;
+        });
+
+        document.getElementById('maxPrice').addEventListener('input', function () {
+            document.getElementById('maxPriceValue').textContent = this.value;
+        });
+
+
+        function filterItems(searchInputId, itemSelector) {
+            const searchInput = document.getElementById(searchInputId).value.toLowerCase();
+            const items = document.querySelectorAll(itemSelector);
+            let checkedItems = [];
+            let uncheckedItems = [];
+
+            items.forEach(item => {
+                const isChecked = item.querySelector(".form-check-input").checked;
+                const itemName = item.querySelector(".form-check-label").textContent.toLowerCase();
+
+                if (itemName.includes(searchInput)) {
+                    if (isChecked) {
+                        checkedItems.push(item);
+                    } else {
+                        uncheckedItems.push(item);
+                    }
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+
+            let displayedCount = 0;
+            [...checkedItems, ...uncheckedItems].forEach(item => {
+                if (displayedCount < 10) {
+                    item.style.display = "";
+                    displayedCount++;
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+
+        window.onload = function () {
+            filterItems('authorSearch', '.author-item');
+            filterItems('categorySearch', '.category-item');
+            filterItems('publisherSearch', '.publisher-item');
+        };
+
+        function clearFilters() {
+            // Prevent default anchor behavior
+            event.preventDefault();
+
+            // Clear all checkboxes
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            // Reset range inputs to their default values
+            const minPriceInput = document.getElementById('minPrice');
+            const maxPriceInput = document.getElementById('maxPrice');
+            minPriceInput.value = minPriceInput.min; // Reset to minimum value
+            maxPriceInput.value = maxPriceInput.max; // Reset to maximum value
+
+            // Update displayed values
+            document.getElementById('minPriceValue').textContent = minPriceInput.value;
+            document.getElementById('maxPriceValue').textContent = maxPriceInput.value;
+
+            // Optionally, you can submit the form after clearing filters
+            document.getElementById('filterForm').submit();
+        }
+    </script>
+}

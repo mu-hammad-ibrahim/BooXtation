@@ -1,0 +1,16 @@
+﻿@model bool
+@{
+    ViewData["Title"] = "My Wishlist";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@if(Model == true)
+{
+    <div class="container cart-empty my-5 py-5">
+        <div class="text-center my-5">The Order Placed ...... <span>DONE</span> </div>
+    </div>
+    
+}
+else
+{
+    <h1>One Of YOUR BOOKS SOLD AND OUT OF STOCk</h1>
+}

@@ -1,0 +1,228 @@
+﻿@model Book
+@{
+    ViewData["Title"] = "Book Details";
+}
+
+<div class="container mt-5 d-inline">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a class="d-inline" href="@Url.Action("Index", "Book")">Home</a></li>
+            <li class="breadcrumb-item"><a class="d-inline" href="@Url.Action("GetAllBookWithSpecs", "Book")">Store</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-md-5 d-flex justify-content-center align-items-center mb-4">
+            <img src="~/files/images/@Model.Cover_Image" alt="@Model.Title" class="img-fluid rounded border border-2 p-2" style="max-width: 400px; width:250px;" />
+        </div>
+
+        <div class="col-md-4 col-sm-8 col-xs-8">
+           
+            <h1 class="text-primary ">@Model.Title</h1>
+            <p> @Model.Summary</p>
+
+            <hr />
+            <div class="row">
+
+            <div class="col-8">
+            <span class="text-muted fw-bold">
+                <del>EGP @Model.ActualPrice</del>
+            </span>
+            @if (Model.Discount > 0)
+            {
+                <span class="text-danger fw-bold d-inline">-@Model.Discount.ToString("0")%</span>
+            }
+            <h4 class="text-primary fw-bold d-inline"><sup>EGP</sup>@Model.Price</h4>
+            </div>
+
+                <div class="col-4 align-content-center align-items-center">
+                    <span class="fs-4  @(Model.Stock > 10 ? "text-success" : Model.Stock > 0 ? "text-muted" : "text-danger")">
+
+                        <text>@(Model.Stock > 10 ? "In Stock" : Model.Stock > 0 ? Model.Stock + " Books Left" : "Sold Out")</text>
+       
+            </span>
+            </div>
+
+            </div>
+            <hr />
+
+            <div class="mt-4 align-content-center">
+                
+                <p>
+                    <strong>Publisher:</strong>
+                    <a asp-controller="Book" asp-action="GetAllBookWithSpecs" asp-route-PublisherIds="@Model.Publisher.Publisher_ID">
+                        @Model.Publisher.Name
+                    </a>
+                </p>
+
+                <p>
+                    <strong>Author:</strong>
+                    <a asp-controller="Book" asp-action="GetAllBookWithSpecs" asp-route-AuthorIds="@Model.Author.Author_ID">
+                        @Model.Author.Name
+                    </a>
+                </p>
+                <p>
+                    <strong>Category:</strong>
+                    <a asp-controller="Book" asp-action="GetAllBookWithSpecs" asp-route-CategoryIds="@Model.Category.Category_ID">
+                        @Model.Category.Name
+                    </a>
+                </p>
+
+                <p><strong>Language:</strong> @Model.Language</p>
+                <p><strong>Publish Date:</strong> @Model.Publish_Date?.ToString("MMMM dd, yyyy")</p>
+                <p><strong>Page Count:</strong> @Model.Pages</p>
+            </div>
+
+            <div class="mt-4">
+                <p>Support 24/7: <a href="https://wa.me/+00000000000000">Contact us via WhatsApp</a></p>
+                <p>Fast Shipping: Quick shipping to your doorstep</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-4 col-xs-4 text-center align-content-center">
+
+
+        @if (Model.Stock > 0)
+        {
+            <div class="mt-4 py-3">
+                
+                <div class="mb-3">
+                    <h5>Quantity:</h5>
+                    <div class="quantity d-inline-flex">
+                        <button class="minus btn btn-outline-success" style="all:revert; !important;">-</button>
+                        <input type="number" value="1" min="1" max="@Model.Stock" class="qty p-1 border text-center" style="padding:4px !important" />
+                        <button class="plus btn btn-outline-success" style="all:revert; !important;">+</button>
+                    </div>
+                </div>
+                
+                <h2 class="text-dark fw-bold d-inline mb-4">
+                    <sup>EGP</sup><span class="d-inline" id="totalPrice">@Model.Price</span>
+                </h2>
+                <div class="my-2">
+
+                        <button class="w-100 btn btn-primary @(Model.Stock <= 0 ? "disabled" : "")"
+                                onclick="AddItem(@Model.Book_ID)">
+                            Add to Cart
+                        </button>
+
+                </div>
+                    <div id="alertContainer" class="mt-3"></div>
+
+            </div>
+        }
+        else
+        {
+                <div class="text-danger mt-4 py-3">
+                <h2>Out of Stock</h2>
+            </div>
+        }
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var pricePerUnit = @Model.Price; // Get the price from the model
+            var maxStock = @Model.Stock;     // Get the max stock from the model
+            var inputElements = document.querySelectorAll('.quantity'); // All quantity controls
+            var totalPriceElement = document.querySelector('#totalPrice'); // Total price element
+
+            inputElements.forEach(function (element) {
+                var input = element.querySelector('.qty');
+                var plusButton = element.querySelector('.plus');
+                var minusButton = element.querySelector('.minus');
+
+                // Function to update the total price based on quantity
+                function updateTotalPrice() {
+                    var quantity = parseInt(input.value) || 1;
+                    totalPriceElement.textContent = (pricePerUnit * quantity).toFixed(2); // Update the total price
+                }
+
+                // Function to update the state of the buttons
+                function updateButtons() {
+                    plusButton.disabled = parseInt(input.value) >= maxStock;
+                    minusButton.disabled = parseInt(input.value) <= 1;
+                }
+
+                // Add event listeners for incrementing and decrementing quantity
+                plusButton.addEventListener('click', function () {
+                    var currentVal = parseInt(input.value);
+                    if (!isNaN(currentVal) && currentVal < maxStock) {
+                        input.value = currentVal + 1;
+                        updateTotalPrice();  // Recalculate total price
+                        updateButtons();     // Update button states
+                    }
+                });
+
+                minusButton.addEventListener('click', function () {
+                    var currentVal = parseInt(input.value);
+                    if (!isNaN(currentVal) && currentVal > 1) {
+                        input.value = currentVal - 1;
+                        updateTotalPrice();  // Recalculate total price
+                        updateButtons();     // Update button states
+                    }
+                });
+
+                // Recalculate the total price and update buttons when input is directly changed
+                input.addEventListener('change', function () {
+                    updateTotalPrice();  // Recalculate total price
+                    updateButtons();     // Update button states
+                });
+
+                // Initialize the button states and total price on load
+                updateButtons();
+                updateTotalPrice();
+            });
+        });
+
+        function AddItem(Book_ID) {
+            var quantity = document.querySelector('.qty').value;  // Get the selected quantity
+
+            $.ajax({
+                url: '/Cart_Item/addBookToCart_items',
+                type: 'POST',
+                data: {
+                    Book_ID: Book_ID,
+                    quantity: quantity  // Pass the selected quantity
+                },
+                success: function (response) {
+
+                    // Update the cart count
+                    $.ajax({
+                        url: '/Cart_Item/GetCountOfItems',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            $('.cart-count').text(data);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error fetching cart count:", error);
+                        }
+                    });
+
+                    showAlert('Book added to cart', 'success');
+                },
+                error: function () {
+                    console.log("Error: Not Authorized or Stock unavailable");
+                }
+            });
+        }
+
+        function showAlert(message, type) {
+            var alertDiv = $('<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' +
+                message +
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                '</div>');
+
+            $('#alertContainer').append(alertDiv);
+
+            setTimeout(function () {
+                alertDiv.alert('close'); 
+            }, 5000); 
+        }
+       
+    </script>
+
+}

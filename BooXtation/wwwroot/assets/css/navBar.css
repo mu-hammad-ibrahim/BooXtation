@@ -1,0 +1,441 @@
+﻿.input-wrapper .search-bar {
+    position: relative;
+}
+
+    .input-wrapper .search-bar #search {
+        border: 2px solid #adadad;
+        padding: 5px !important;
+        border-radius: 10px;
+        width: 180px;
+        transition: width 0.3s ease;
+        outline-style: none;
+    }
+
+
+
+.input-wrapper .search-btn {
+    /*position: absolute;
+    padding: 5px 5px 0;
+    position: absolute;
+    top: 3.5px;
+    left: 142px;
+    padding-left: 10px;
+    font-size: 18px;
+    color: var(--grey-color);*/
+
+    background-color: var(--maximum-blue-green);
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    padding-bottom: 9px;
+    padding-right: 9px;
+    padding-top: 10px;
+    color: white;
+    position: absolute;
+    top: 0.4px;
+    padding-left: 10px;
+    font-size: 18px;
+}
+
+
+.pop_overStyle {
+    display: none; /* Hidden by default */
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    top: 70px;
+    padding: 10px 15px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure it's above other content */
+    border-top-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-top-right-radius: 0;
+    width: 300px;
+    right: 125px;
+}
+
+    .pop_overStyle .login-form-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 5px 8px;
+    }
+
+    .pop_overStyle .login-form-title {
+        font-size: 18px;
+        color: #333;
+        margin-bottom: 0;
+    }
+
+    .pop_overStyle .login-form-bottom {
+        text-align: right;
+    }
+
+    .pop_overStyle a.register-link, a.lostpass-link {
+        color: #797979;
+        font-size: 16px;
+    }
+
+    .pop_overStyle a.lostpass-link {
+        text-decoration: underline dotted;
+    }
+
+    .pop_overStyle a.register-link:hover, a.lostpass-link:hover {
+        color: #191919;
+    }
+
+    .pop_overStyle .PopoverInput {
+        border: 2px solid #7d7d7d7d;
+        margin: 10px 5px 5px auto;
+        outline-style: none;
+        padding: 8px 5px 8px 15px;
+        border-radius: 20px;
+    }
+
+    .pop_overStyle .signinInput {
+        border: 2px solid #7d7d7d7d;
+        margin: 10px 5px 5px 0px;
+        outline-style: none;
+        padding: 8px 5px;
+        border-radius: 20px;
+        width: 40%;
+    }
+
+    .pop_overStyle .PopoverInput:focus {
+        border: 2px solid var(--maximum-blue-green);
+    }
+
+    .pop_overStyle .PopoversubmitInput {
+        color: white;
+        background-color: var(--maximum-blue-green);
+        cursor: pointer;
+        padding: 8px 0;
+    }
+
+        .pop_overStyle .PopoversubmitInput:hover {
+            background-color: hsl(184, 75%, 33%);
+        }
+
+.UserPopOver {
+    display: none; /* Hidden by default */
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    top: 70px;
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+.pop_overStyle {
+    display: none; /* Hidden by default */
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    top: 70px;
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+/*@media (max-width:992px ) {
+    .header-bottom .container .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .input-wrapper {
+        display: none;
+    }
+
+    .navbar {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        max-width: 260px;
+        width: 100%;
+        height: 100vh;
+        background-color: var(--xiketic);
+        border: 1px solid var(--white-1);
+        padding: 30px 5px;
+        z-index: 1;
+        transition: 0.25s var(--cubic-in);
+        visibility: hidden;
+    }
+
+        .navbar.active {
+            transform: translateX(-300px);
+            visibility: visible;
+            transition: 0.5s var(--cubic-out);
+        }
+
+    .pop_overStyle {
+        top: 58px;
+        right: 63px;
+    }
+}*/
+
+/**
+ * responsive for large than 992px screen
+ */
+
+/*@media (min-width: 992px) {
+
+  
+
+    .navbar-list {
+        gap: 3px;
+    }
+
+        .navbar-list li {
+            width: max-content;
+        }
+
+    .input-wrapper {
+        position: relative;
+        max-width: 340px;
+        width: 100%;
+        left: 15px;
+    }
+
+    .header-top {
+        padding-block: 20px;
+        border-block-end: 1px solid var(--white_10);
+    }
+
+    .input-field {
+        font-size: var(--fs-6);
+        height: 50px;
+        border: 1px solid var(--white_10);
+        padding-inline: 15px;
+        background-color: var(--oxford-blue);
+        border-radius: 10px;
+        height: 40px;
+    }
+
+    .input-wrapper .search-btn {
+        left: 142px;
+    }
+
+    .input-wrapper .btn {
+        position: absolute;
+        height: 40px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        font-weight: bold;
+        color: var(--oxford-blue);
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        padding-inline: 15px;
+        background-color: var(--maximum-blue-green);
+        border-color: var(--maximum-blue-green);
+    }
+
+        .input-wrapper .btn:is(:hover, :focus) {
+            color: white;
+            background-color: hsl(184, 75%, 33%);
+        }
+
+
+    .input-wrapper .search-bar #search:focus {
+        width: 270px;
+        border: 2.5px solid var(--maximum-blue-green);
+    }
+
+    .input-wrapper .search-bar #search:not(:focus) {
+        width: 180px;
+        transition: width 0.3s ease;
+    }
+
+    .input-wrapper .search-bar #search:focus::placeholder {
+        opacity: 0;
+    }
+
+    .input-wrapper #search:focus ~ #search-btn {
+        transform: translateX(89px);
+        transition: transform 0.3s ease;
+        top: 1.5px;
+        left: 139px;
+        font-size: 25px;
+        outline: none;
+        padding-bottom: 5px;
+        padding-right: 8px;
+        padding-top: 5px;
+    }
+
+    .input-wrapper #search:not(:focus) ~ #search-btn {*/
+        /*transform: translateX(119px);*/
+        /*transition: transform 0.3s ease;
+    }
+
+
+    .input-wrapper .input-field::-webkit-input-placeholder {
+        font-size: 16px;*/ /* Match the font size of the input */
+    /*}
+
+    .input-wrapper .input-field:-moz-placeholder {
+        font-size: 16px;*/ /* Firefox */
+    /*}
+
+    .input-wrapper .input-field::-moz-placeholder {
+        font-size: 16px;*/ /* Firefox */
+    /*}
+
+    .input-wrapper .input-field:-ms-input-placeholder {
+        font-size: 16px;*/ /* Internet Explorer */
+    /*}
+
+    .header-action {
+        gap: 25px;
+    }
+
+    .header-bottom,
+    .header-bottom.active,
+    .navbar-list {
+        all: unset;
+        display: block;
+    }
+
+    .header-bottom {
+        padding-block: 10px;
+    }
+
+        .header-bottom .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+    .navbar-list {
+        display: flex;
+        margin-right: 20px;*/
+        /*gap: 14px;*/
+    /*}
+
+    .header-contact-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: var(--transition-1);
+    }
+
+        .header-contact-link .span {
+            font-size: var(--fs-4);
+        }
+
+        .header-contact-link ion-icon {
+            font-size: 30px;
+        }
+
+        .header-contact-link:is(:hover, :focus) {
+            color: black;*/
+            /*color: var(--maximum-blue-green);*/
+        /*}
+
+    .navbar-link {
+        color: #5b5b5b;
+        font-weight: 500;
+    }
+
+    .header.active {
+        position: absolute;
+        transform: none;
+        animation: none;
+    }
+
+        .header.active .header-bottom {
+            background-color: var(--xiketic);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            transform: translateY(-100%);
+            animation: slideInTop 0.5s ease forwards;
+            box-shadow: 0px 10px 15px -10px var(--border-color);
+        }
+}*/
+
+
+
+
+
+/**
+ * responsive for large than 1200px screen
+ */
+
+/*@media (min-width: 1200px) {*/
+
+ 
+
+
+    /**
+   * HEADER
+   */
+    
+    /*.input-wrapper {
+        max-width: 340px;
+        left: -10px;
+    }
+
+
+        .input-wrapper .search-bar #search:focus {
+            width: 340px;
+            border: 2.5px solid var(--maximum-blue-green);
+        }
+
+        .input-wrapper .search-bar #search:not(:focus) {
+            width: 240px;
+            transition: width 0.3s ease;
+        }
+
+        .input-wrapper .search-bar #search:focus::placeholder {
+            opacity: 0;
+        }
+
+        .input-wrapper #search:focus ~ #search-btn {
+            transform: translateX(159px);
+            transition: transform 0.3s ease;
+            top: 1.5px;
+            font-size: 25px;
+            outline: none;
+        }
+
+        .input-wrapper #search:not(:focus) ~ #search-btn {
+            transform: translateX(60px);
+            transition: transform 0.3s ease;
+        }
+
+
+        .input-wrapper .input-field::-webkit-input-placeholder {
+            font-size: 16px;*/ /* Match the font size of the input */
+        /*}
+
+        .input-wrapper .input-field:-moz-placeholder {
+            font-size: 16px;*/ /* Firefox */
+        /*}
+
+        .input-wrapper .input-field::-moz-placeholder {
+            font-size: 16px;*/ /* Firefox */
+        /*}
+
+        .input-wrapper .input-field:-ms-input-placeholder {
+            font-size: 16px;*/ /* Internet Explorer */
+        /*}
+
+    .navbar-list {
+        gap: 22px;
+    }
+
+        .navbar-list li {
+            width: max-content;
+        }
+
+
+
+}*/

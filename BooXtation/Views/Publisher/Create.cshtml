@@ -1,0 +1,34 @@
+﻿@model BookXtation.DAL.Models.ViewModels.PublisherViewModel
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; // Specify the layout for the view
+    ViewBag.Title = "Create Publisher"; // Set the title for the view
+}
+
+<h2>Create Publisher</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control mb-2" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Address"></label>
+        <input asp-for="Address" class="form-control mb-2" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Contact"></label>
+        <input asp-for="Contact" class="form-control mb-2" />
+        <span asp-validation-for="Contact" class="text-danger"></span>
+    </div>
+    <div class="form-group mt-3">
+        <!-- Add mt-3 here for spacing -->
+        <div class="d-flex">
+            <input type="submit" value="Create" class="btn btn-primary me-2" />
+            <a asp-controller="Admin" asp-action="ViewPublishers" class="btn btn-secondary">View All Publishers</a>
+        </div>
+    </div>
+</form>
+

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<BookXtation.DAL.Models.Data.Category>
+
+@* @{
+    ViewBag.Title = "Categories";
+} *@
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.Title = "Categories";
+}
+
+<h2>Categories</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Category</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Category_ID" class="btn btn-secondary">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Category_ID" class="btn btn-info">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Category_ID" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

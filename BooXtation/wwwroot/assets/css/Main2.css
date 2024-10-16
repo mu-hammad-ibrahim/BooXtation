@@ -1,0 +1,56 @@
+﻿.form-floating > .form-control, .form-floating > .form-select {
+    height: auto;
+}
+/*input:not(.form-check-input) {
+    padding: 12px !important;
+}*/
+.form-control {
+    font-size: 1.5rem;
+}
+
+div div p a:hover {
+    text-decoration-line: underline;
+    color: black;
+}
+
+div div p a {
+    display: inline !important;
+    color: #31BAC4;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    text-decoration-line: none;
+}
+
+a, img, span, time, data, input, button, ion-icon {
+    display: block;
+}
+
+
+    input:not(:placeholder-shown) + label {
+        display: none;
+    }
+
+    main input:not(.form-check-input) {
+        padding: 12px !important;
+    }
+
+        input:not(.form-check-input):focus + label {
+            transform: none !important;
+        }
+
+label:not([for="Input_RememberMe"]) {
+    margin-left: 6px;
+}
+#account #Input_RememberMe {
+    display: inherit;
+}
+.btn-link:hover {
+    color: #31BAC4;
+}
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #E2D8C9 !important;
+    color: #000 !important;
+}

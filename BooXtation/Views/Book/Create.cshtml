@@ -1,0 +1,154 @@
+﻿@model BookViewModel
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+            <h4>Add A New Book</h4>
+
+        <a class="btn btn-link" asp-action="ViewBooks" asp-controller="admin">
+            View all Books
+        </a>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form asp-action="Create" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Title" class="control-label"></label>
+                                <input asp-for="Title" class="form-control" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="ActualPrice" class="control-label"></label>
+                                <input asp-for="ActualPrice" type="number" min="0" class="form-control" id="ActualPrice" />
+                                <span asp-validation-for="ActualPrice" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Discount" class="control-label"></label>
+                                <input asp-for="Discount" type="number" min="0" max="100" class="form-control" id="Discount" />
+                                <span asp-validation-for="Discount" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Final Price</label>
+                                <input type="text" class="form-control" id="FinalPrice" readonly />
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ISBN" class="control-label"></label>
+                                <input asp-for="ISBN" type="number" class="form-control" />
+                                <span asp-validation-for="ISBN" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Stock" class="control-label"></label>
+                                <input asp-for="Stock" type="number" min="1" class="form-control" />
+                                <span asp-validation-for="Stock" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Pages" class="control-label"></label>
+                                <input asp-for="Pages" type="number" min="1" class="form-control" />
+                                <span asp-validation-for="Pages" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Language" class="control-label"></label>
+                                <input asp-for="Language" type="text" class="form-control" />
+                                <span asp-validation-for="Language" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Publish_Date" class="control-label"></label>
+                                <input asp-for="Publish_Date" type="date" class="form-control" />
+                                <span asp-validation-for="Publish_Date" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 text-center">
+                                <img width="100%" id="ImagePreview" />
+                            </div>
+
+
+                            <div class="form-group">
+                                <label asp-for="Cover_Image_File" class="control-label"></label>
+                                <input asp-for="Cover_Image_File" type="file" class="form-control" />
+                                <span asp-validation-for="Cover_Image_File" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Author_ID" class="control-label"></label>
+                                <select asp-for="Author_ID" class="form-control" asp-items="ViewBag.Author"></select>
+                                <span asp-validation-for="Author_ID" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Category_ID" class="control-label"></label>
+                                <select asp-for="Category_ID" class="form-control" asp-items="ViewBag.Category"></select>
+                                <span asp-validation-for="Category_ID" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Publisher_ID" class="control-label"></label>
+                                <select asp-for="Publisher_ID" class="form-control" asp-items="ViewBag.Publisher"></select>
+                                <span asp-validation-for="Publisher_ID" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="Summary" class="control-label"></label>
+                                <textarea asp-for="Summary" class="form-control"></textarea>
+                                <span asp-validation-for="Summary" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group mt-2">
+                        <input type="submit" value="Create" class="btn btn-outline-success float-right" />
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function calculateFinalPrice() {
+            const actualPrice = parseFloat(document.getElementById('ActualPrice').value) || 0;
+            const discount = parseFloat(document.getElementById('Discount').value) || 0;
+            const finalPrice = actualPrice - (actualPrice * (discount / 100));
+            document.getElementById('FinalPrice').value = finalPrice.toFixed(2);
+        }
+        document.getElementById('ActualPrice').addEventListener('input', calculateFinalPrice);
+        document.getElementById('Discount').addEventListener('input', calculateFinalPrice);
+
+
+        document.getElementById('Cover_Image_File').addEventListener('change', function () {
+            var output = document.getElementById('ImagePreview');
+            output.src = URL.createObjectURL(this.files[0]);
+
+            // Update the Cover_Image field with the selected file name
+            var fileInput = document.getElementById('Cover_Image_File');
+            var coverImageField = document.querySelector('input[name="Cover_Image_File"]');
+            if (fileInput.files.length > 0) {
+                coverImageField.value = fileInput.files[0].name;
+            } else {
+                coverImageField.value = "";
+            }
+
+        });
+    </script>
+}

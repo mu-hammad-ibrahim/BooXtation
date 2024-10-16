@@ -1,0 +1,263 @@
+﻿@model List<Cart_Item>
+@{
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+@{
+    var Customer_ID = ViewBag.Customer_ID;
+
+}
+
+
+<div class="mainTitle">Cart</div>
+@if (Model.Any())
+{
+    @if (TempData["outofStock"] != null)
+    {
+        <div id="outofStock" class="text-danger fs-3">
+            @TempData["outofStock"]
+        </div>
+    }
+    <form class="d-lg-flex" asp-controller="Order" asp-action="OrderPage" asp-route-Customer_ID="@Customer_ID" method="post">
+        <div class="cartItemsSection mb-3">
+
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                if(Model[i].book.Stock == 0)
+                {
+
+
+                    <div class="d-lg-flex gap-sm-5 gap-xs-3 rounded-3 itemCartCard align-items-center">
+                        
+                        <img src="~/files/images/@Model[i].book.Cover_Image" class="disable-divs" alt="@Model[i].book.Cover_Image">
+                        <div class="cartItemsDetails disable-divs gap-3 d-lg-flex align-items-center">
+                            <input type="text" asp-for="@Model[i].book.Title" class="CartforRead border-0" hidden />
+                            <p class="bookTitle CartforRead border-0" readonly>@Model[i].book.Title</p>
+
+                            <input type="hidden" asp-for="@Model[i].CartItem_ID" />
+                            <input type="hidden" asp-for="@Model[i].book" />
+
+                            <div class="d-flex gap-3 align-items-center">
+                                <input type="number" class="quantity" asp-for="@Model[i].Quantity" min="1" max="10" data-id="@Model[i].Book_ID" />
+
+                                <input type="hidden" asp-for="@Model[i].Book_ID" />
+                                <span class="item_Price CartforRead border-0 " data-price="@Model[i].book.Price"></span>
+
+                                @* <span class="get_price" name="Price" value="@item.Price" >@(item.Price * item.Quantity)</span> *@
+                                <div>
+                                    <span>EGP </span>
+                                    <input type="text" asp-for="@Model[i].Price" value="@(Model[i].Price)"
+                                       class="get_price CartforRead priceforRead subPrice border-0 text-start" data-totalPrice="@(Model[i].Price)" readonly />
+                                </div>
+
+                                <span class="jsonMassage-@Model[i].Book_ID text-danger avaliable text-center">OUT OF STOCK</span>
+                               
+                            </div>
+                        </div>
+                        <input type="button" class="delete-cartItem" value="X" data-id="@Model[i].CartItem_ID" />
+
+
+                    </div>
+                }
+                else
+                {
+                    <input type="text" asp-for="@Model[i].book" class="CartforRead border-0" hidden>
+
+                    <div class="d-lg-flex gap-sm-5 gap-xs-3 rounded-3 itemCartCard align-items-center">
+                        <img src="~/files/images/@Model[i].book.Cover_Image" alt="@Model[i].book.Cover_Image">
+                        <div class="cartItemsDetails gap-3 d-lg-flex align-items-center">
+                            <input type="text" asp-for="@Model[i].book.Title" class="CartforRead border-0" hidden />
+                            <p class="bookTitle CartforRead border-0" readonly>@Model[i].book.Title</p>
+
+                            <input type="hidden" asp-for="@Model[i].CartItem_ID" />
+                            <input type="hidden" asp-for="@Model[i].book" />
+
+                            <div class="d-flex gap-3 align-items-center">
+                                <input type="number" class="quantity form-control form-outline" asp-for="@Model[i].Quantity" min="1" max="10" data-id="@Model[i].Book_ID" />
+
+                                <input type="hidden" asp-for="@Model[i].Book_ID" />
+                                <span class="item_Price CartforRead border-0 " data-price="@Model[i].book.Price"></span>
+                         
+                                @* <span class="get_price" name="Price" value="@item.Price" >@(item.Price * item.Quantity)</span> *@
+                                <div>
+                                    <span>EGP </span>
+                                    <input type="text" asp-for="@Model[i].Price" value="@(Model[i].Price)"
+                                       class="get_price CartforRead priceforRead border-0 text-start" data-totalPrice="@(Model[i].Price)" readonly />
+                                </div>
+                                @if (Model[i].Quantity > Model[i].book.Stock)
+                                {
+                                    <span class="jsonMassage-@Model[i].Book_ID text-danger avaliable text-center">Not Avaliable</span>
+                                }
+                                else
+                                {
+                                    <span class="jsonMassage-@Model[i].Book_ID text-success avaliable text-center">Avaliable</span>
+                                }
+                                <input type="button" class="delete-cartItem d-block d-md-none" value="X" data-id="@Model[i].CartItem_ID" />
+
+                           </div>
+                            
+                        </div>
+                        <input type="button" class="delete-cartItem d-none d-md-block" value="X" data-id="@Model[i].CartItem_ID" />
+
+                    </div>
+                }
+
+            }
+        </div>
+        <div class="cartPriceSection">
+	            <h2>Cart totals</h2>
+            <div class="cart_totals">
+                <div class="totalOrderPrice d-flex justify-content-between align-items-center my-4">
+                    <h3 class="mb-0">TOTAL</h3>
+                    <div class="">
+                        <span class="fw-bold text-black">EGP</span>
+                        @* <span class="cartTotal text-black text-end fw-bold fs-3"></span> *@
+                        <input class="priceforRead CartforRead cartTotal border-0" type="text" name="TotalAmount" value="500" readonly />
+                        @* <input type="hidden" class="priceforRead totalAmount border-0 text-end fw-bold fs-3" name="TotalAmount" value="" readonly /> *@
+                    </div>
+                </div>
+	            
+                <input type="submit" value="Proceed to checkout" class="checkout w-100 btn btn-outline-success float-right" />
+	
+            </div>
+            
+
+            
+        </div>
+        
+    </form>
+}
+else
+{
+    <div class="container cart-empty">
+        <img src="~/assets/images/cart_Empty.png" alt="cart_Empty" class="mx-auto my-auto d-block mb-5" />
+        <div class="text-center mt-5">Your Cart Is <span>Empty</span> </div>
+    </div>
+    
+}
+
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    var forReads = document.querySelectorAll('.priceforRead');
+    
+    forReads.forEach((item) => {
+        item.style.width = '8ch';   
+    });
+
+
+    $(document).ready(function () {
+        updateCartTotal();
+
+        $('.quantity').on('change', function () {
+            var quantity = $(this).val();
+            var price = $(this).closest('div').find('.item_Price').data('price');
+            var itemId = $(this).data('id');
+            var customerId = '@Html.Raw(Customer_ID)';
+
+                
+            var newTotalPrice = quantity * price ;
+            $(this).closest('div').find('.get_price').val(newTotalPrice.toFixed(2));
+
+
+            updateCartTotal();
+
+
+            $.ajax({
+                url: '/Cart_Item/CheckQuantityWithoutSubmit',
+                type: 'POST',
+                data: { id: itemId, quantity: quantity, customerId: customerId },
+                success: function (response) {
+                    console.log(response);
+                    if (response.available) {
+                        $('.jsonMassage-' + itemId).text(response.message).removeClass('text-danger')
+                            .addClass('text-success').show();
+                    } else {
+                        $('.jsonMassage-' + itemId).text(response.message)
+                             .removeClass('text-success')
+                             .addClass('text-danger').show();
+                    }
+                },
+
+                error: function () {
+                    alert("Failed to update quantity.");
+                }
+            });
+        });
+
+
+        function updateCartTotal() {
+            var cartTotal = 0;
+            $('.get_price').each(function () {
+                cartTotal += parseFloat($(this).val());
+            });
+            $('.cartTotal').val(cartTotal.toFixed(2));
+        }
+    });
+
+    $(document).ready(function () {
+
+        $(".delete-cartItem").click(function () {
+            var CartItem_ID = $(this).data("id"); 
+            var row = $(this).parents(".itemCartCard"); 
+            var price = $(this).closest('div').find('.get_price').val();
+            
+            $.ajax({
+                url: '/Cart_Item/DeleteBook', 
+                type: 'POST',
+                data: { id: CartItem_ID }, 
+                success: function (response) {
+                    
+                    if (response.deleted) {
+
+                        row.hide( 350, function () {
+                            $(this).remove();  
+                        });
+                        // row.prev().remove();
+                        updateCartTotalafterDelete(price)
+
+                        if ($(".delete-cartItem").closest('div').length-2 === 0) {
+                            console.log("Ssss")
+                            location.reload();
+                        }
+
+                    } else {
+                        console.log(response.message || "Error while deleting item.");
+                    }
+
+                    
+                },
+                error: function () {
+                    alert("Something went wrong.");
+                }
+            });
+        });
+        function updateCartTotalafterDelete(BookPrice) {
+
+            var cartTotal = $('.cartTotal').val() - BookPrice;
+
+            $('.cartTotal').val(cartTotal.toFixed(2));
+        }
+    });
+
+
+    /////////////////// IF Book Out OF Stock When Place ORder
+    document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(function () {
+            var outofStock = document.getElementById("outofStock");
+            if (outofStock) {
+                outofStock.style.opacity = 0;
+                setTimeout(function () {
+                    outofStock.style.display = 'none';
+                }, 3000);
+            }
+
+        }, 5000);
+    });
+</script>

@@ -1,0 +1,180 @@
+﻿@model IQueryable<Order>
+@{
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+<div class="mainTitle">Your Last Orders</div>
+<div class="container">
+@if(Model.Any())
+{
+    
+     <div class="accordion accordion-orders-details" id="accordionExample">
+        @foreach (var order in Model){
+            <div class="accordion-item border-2 border-top mb-3">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@order.Order_ID" aria-expanded="true" aria-controls="collapse-@order.Order_ID">
+                        
+                        <div class="d-flex justify-content-center align-items-center gap-5">
+                     
+                            <p class="text-secondary m-0 fs-3">Order Number : <span>@order.Order_ID</span></p>
+
+                            <p class="text-secondary m-0 fs-3">@order.OrderDate</p>
+
+                            @if (order.OrderStatus == "Pending" )
+                            {
+                                <p class="bg-warning text-dark fs-5 fw-bold text-center rounded-3 m-0 px-4 py-2">@order.OrderStatus</p>
+                            }
+                            else if (order.OrderStatus == "Processing")
+                            {
+                                <p class="bg-primary text-white fs-5 fw-bold text-center rounded-3 m-0 px-4 py-2">@order.OrderStatus</p>
+                            }
+                            else if (order.OrderStatus == "Out For Delivery" || order.OrderStatus == "Delivered" || order.OrderStatus == "Completed")
+                            {
+                                <p class="bg-success fs-5 fw-bold text-white text-center rounded-3 m-0 px-4 py-2">@order.OrderStatus</p>
+                            }
+                            else
+                            {
+                                <p class="bg-danger fs-5 fw-bold text-white text-center rounded-3 m-0 px-4 py-2">@order.OrderStatus</p>
+                            }
+
+                           
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapse-@order.Order_ID" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        @foreach (var item in order.Order_Items){
+                            <div class="container last-order-container w-100 d-flex justify-content-between">
+
+                                <div class="last-order-card d-flex justify-content-center">
+                                    <img src="~/files/images/@item.book.Cover_Image" class="last-order-img" alt="@item.book.Cover_Image">
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <h2>@item.book.Title</h2>
+                                        <p class="text-secondary mb-2">Order Item Number : <span>@item.OrderItem_ID</span></p>
+                                        @* @if (order.OrderStatus == "Pending" || order.OrderStatus == "Processing")
+                                        {
+                                            <p class="bg-warning fs-5 fw-bold text-center rounded-3 px-4 mb-2 py-1">@order.OrderStatus</p>
+                                        }
+                                        else if (order.OrderStatus == "Shipped" || order.OrderStatus == "Delivered" || order.OrderStatus == "Completed")
+                                        {
+                                            <p class="bg-success fs-5 fw-bold text-white text-center rounded-3 px-4 mb-2 py-1">@order.OrderStatus</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="bg-danger fs-5 fw-bold text-white text-center rounded-3 px-4 mb-2 py-1">@order.OrderStatus</p>
+                                        } *@
+
+                                        <p class="text-secondary mb-2">@order.OrderDate</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    @if (order.OrderStatus != "Order Is Cancelled"){
+                                        <a asp-action="ShowOrderDetails" asp-route-itemID="@item.OrderItem_ID" class="mt-5 mr-3">Show Details</a>
+
+                                    }
+                                            <a class="mr-3 mt-3" id="add-to-cart" aria-label="Buy Again" title="Buy Again"
+                                           onclick="AddItem(@item.Book_ID)">Buy Again</a>
+                                </div>
+                            </div>
+                         }
+                        @if (order.OrderStatus != "Order Is Cancelled" && order.OrderStatus != "Rejected")
+                        {    
+                            <a data-Order_ID="@order.Order_ID"
+                                class="order-cancel mr-3 mt-3 py-3 px-4 btn text-white rounded rounded-3 d-block">Cancel Order</a>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+     </div>
+}
+else{
+        <div class="container cart-empty my-5 py-5">
+            <div class="text-center my-5">Your Have not Create Any <span>Orders</span> </div>
+        </div>
+}
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+@section Scripts {
+
+    <script>
+        document.querySelectorAll('.accordion-orders-details .accordion-collapse')[0].classList.add("show")
+
+        function AddItem(Book_ID) {
+            $.ajax({
+                url: '/Cart_Item/addBookToCart_items',
+                type: 'POST',
+                data: { Book_ID: Book_ID },
+                success: function (response) {
+
+                    if (response.success) {
+                        console.log(response);
+                    } else {
+                        console.log('failed');
+                    }
+                },
+
+                error: function () {
+                    alert("Failed to update quantity.");
+                }
+            });
+        };
+
+
+            $(document).ready(function() {
+                $('.order-cancel').on('click', function (e) {
+                    e.preventDefault(); // Prevent default button behavior
+
+                    var Order_ID = $(this).data('order_id');
+
+                    Swal.fire({
+                        title: 'Are you sure To Cancel This Order?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, Cancel it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                type: 'POST',
+                                url: '/Order/CancelOrder',
+                                data: { Order_ID: Order_ID },
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire(
+                                            response.message
+                                        ).then(() => {
+                                            location.reload();
+                                        });
+                                    }
+                                    else {
+                                        Swal.fire(
+                                            'Error!',
+                                             response.message,
+                                        );
+                                    }
+                                },
+                                error: function () {
+                                    Swal.fire(
+                                        'Error!',
+                                        'There was an error deleting the item.',
+                                        'error'
+                                    );
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+    
+
+    </script>
+
+
+}
+

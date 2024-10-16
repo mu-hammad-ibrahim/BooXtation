@@ -1,0 +1,142 @@
+﻿@model Order_Item
+@{
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+<div class="mainTitle">Order Details</div>
+<div class="container">
+            <div class="order-item-details m-5 p-3 border-bottom fs-4 text-secondary">
+            <h2 class="text-dark">Order Item Number : <span>@Model.OrderItem_ID</span></h2>
+                <p class="text-secondary mb-2">Date : <span>@Model.Order.OrderDate</span></p>
+                <p class="text-secondary mb-2">Quantity : <span>@Model.Quantity</span></p>
+                <p class="text-secondary mb-2">Amount : <span>@Model.Price</span></p>
+                @if (Model.Order.OrderStatus == "Pending")
+                {
+                    <p class="bg-warning text-dark fs-5 fw-bold text-center rounded-3 px-4 mb-2 py-1">@Model.Order.OrderStatus</p>
+                }
+                else if (Model.Order.OrderStatus == "Processing")
+                {
+                    <p class="bg-warning text-dark fs-5 fw-bold text-center rounded-3 px-4 mb-2 py-1">@Model.Order.OrderStatus</p>
+                }
+                else if (Model.Order.OrderStatus == "Out For Delivery" || Model.Order.OrderStatus == "Completed")
+                {
+                    <p class="bg-success fs-5 fw-bold text-white text-center rounded-3 px-4 mb-2 py-1">@Model.Order.OrderStatus</p>
+                }
+                else
+                {
+                    <p class="bg-danger fs-5 fw-bold text-white text-center rounded-3 px-4 mb-2 py-1">@Model.Order.OrderStatus</p>
+                }
+            </div>
+            <h2 class="text-dark mx-5">Book Details</h2>
+            <div class="container last-order-container my-4  w-100 d-flex justify-content-between">
+            
+                <div class="last-order-card d-flex justify-content-center">
+                    <img src="~/files/images/@Model.book.Cover_Image" class="order-details-img" alt="@Model.book.Cover_Image">
+                    <div class="d-flex flex-column justify-content-center">
+                        <h2>@Model.book.Title</h2>
+                        <p class="text-secondary mb-2">Book Language : <span>@Model.book.Language</span></p>
+                        <p class="text-secondary mb-2">Author Name : <span>@Model.book.Author.Name</span></p>
+                        <p class="text-secondary mb-2">Book Category : <span>@Model.book.Category.Name</span></p>
+                        <p class="text-secondary mb-2">Book Price : <span>@Model.book.Price</span></p>
+                        <p class="text-secondary mb-2">@Model.Order.OrderDate</p>
+
+                    </div>
+                </div>
+                <div>
+                    <a asp-action="ShowCustomerOrders" class="mt-5 mr-3">Back To Last Orders</a>
+                    <a class="mr-3" id="add-to-cart" aria-label="Buy Again" title="Buy Again"
+                       onclick="AddItem(@Model.book.Book_ID)">Buy Again</a>
+                </div>
+                
+            </div>
+            <div class="d-flex gap-4">
+                <div class="container last-order-container my-4">
+
+                <div class="last-order-card pay-delivery mb-4 container">
+                        <h2 class="border-bottom  mt-4 pb-4">Payment Details</h2>
+                        <div class="container mt-5 d-flex flex-column justify-content-center">
+                            <h3>Payment Method</h3>
+                            <p class="text-secondary  mb-2">@Model.Order.Payment.PaymentMethod</p>
+                            <h3>Payment Date</h3>
+                            <p class="text-secondary mb-2">@Model.Order.Payment.PaymentDate</p>
+                            <h3>Payment Status</h3>
+                            @if (Model.Order.PaymentStatus == "Pending" || Model.Order.PaymentStatus == "Processing")
+                            {
+                                <p class="bg-warning fs-5 fw-bold text-center rounded-3 px-4 mb-2 py-1">@Model.Order.PaymentStatus</p>
+                            }
+                            else if (Model.Order.PaymentStatus == "Is_Paid")
+                            {
+                                <p class="bg-success fs-5 fw-bold text-white text-center rounded-3 px-4 mb-2 py-1">@Model.Order.PaymentStatus</p>
+                            }
+                            else
+                            {
+                                <p class="bg-danger fs-5 fw-bold text-white text-center rounded-3 px-4 mb-2 py-1">@Model.Order.PaymentStatus</p>
+                            }
+
+                        </div>
+                </div>
+                
+                </div>
+                 <div class="container mb-4 last-order-container my-4">
+
+                    <div class="last-order-card pay-delivery mb-4 container">
+                           <h2 class="border-bottom mt-4 pb-4">Delivery Details</h2>
+                           <div class="container mt-5 d-flex flex-column justify-content-center">
+                               <h3>Shipment Address</h3>
+                               <p class="text-secondary mb-2">
+                                       Client Name : @Model.Order.OrderDetails.FirstName @Model.Order.OrderDetails.LastName
+                                    <br />
+                                        Phone : @Model.Order.OrderDetails.Phone
+                                    <br />
+                                        Address : @Model.Order.OrderDetails.Build @Model.Order.OrderDetails.street, @Model.Order.OrderDetails.City
+
+                                    @if (Model.Order.OrderDetails.Floor != null || Model.Order.OrderDetails.Flat != null)
+                                    {
+                                        <br />
+                                       <span>Floor Number : @Model.Order.OrderDetails?.Floor, Flat Number : @Model.Order.OrderDetails?.Flat</span>
+                                    }
+                                    @if (Model.Order.OrderDetails.DistinctiveMark != null)
+                                    {
+                                        <br />
+                                         <span>DistinctiveMark : @Model.Order.OrderDetails?.DistinctiveMark</span>
+                                    }
+                               </p>
+
+                           </div>
+                    </div>
+
+                </div>
+            </div>
+        
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+@section Scripts {
+
+    <script>
+       
+        function AddItem(Book_ID) {
+            $.ajax({
+                url: '/Cart_Item/addBookToCart_items',
+                type: 'POST',
+                data: { Book_ID: Book_ID },
+                success: function (response) {
+
+                    if (response.success) {
+                        console.log(response);
+                    } else {
+                        console.log('failed');
+                    }
+                },
+
+                error: function () {
+                    alert("Failed to update quantity.");
+                }
+            });
+        };
+
+    </script>
+
+
+}

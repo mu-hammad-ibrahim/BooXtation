@@ -1,0 +1,102 @@
+﻿@model customerDetailsViewModel
+
+@{
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+<form asp-action="EditAddress" asp-controller="Order" method="post">
+    <div class="billingInfo">
+        <div class="customerInfo d-flex flex-column mt-3">
+            <input type="hidden" name="Customer_ID" value="@Model.Customer_ID" asp-for="@Model.Customer_ID" />
+            <input type="hidden" name="CustomerDetails_ID" value="@Model.CustomerDetails_ID" asp-for="@Model.CustomerDetails_ID" />
+
+            <div class="cusName d-flex gap-3">
+                <div class="d-flex flex-column w-50">
+
+                    <label for="firstName">First Name<label class="text-danger"> * </label></label>
+                    <span class="text-danger fs-4" asp-validation-for="@Model.FirstName"></span>
+                    <input type="text" id="firstName" class="rounded-pill" name="FirstName"
+                           asp-for="@Model.FirstName" value="@Model.FirstName" />
+                </div>
+                <div class="d-flex flex-column w-50">
+                    <label for="lastName">Last Name<label class="text-danger"> * </label></label>
+                    <span class="text-danger fs-4" asp-validation-for="@Model.LastName"></span>
+                    <input type="text" id="lastName" class="rounded-pill" name="LastName"
+                           asp-for="@Model.LastName" value="@Model.LastName" />
+                </div>
+            </div>
+            <label for="Phone">Phone<label class="text-danger"> * </label></label>
+            <span class="text-danger fs-4" asp-validation-for="@Model.Phone"></span>
+            <input type="text" id="Phone" class="rounded-pill" name="Phone"
+                   asp-for="@Model.Phone" value="@Model.Phone" />
+            @* <label for="Billing_Address">Billing Address</label>
+            <input type="type" id="Billing_Address" class="rounded-pill" name="Billing_Address"
+            value="@ViewBag.Customer.Billing_Address" /> *@
+
+            @* <label for="Shipping_Address">Shipping Address<label class="text-danger"> * </label></label>
+            <span class="text-danger fs-4" asp-validation-for="@Model.Shipping_Address"></span>
+            <input type="type" id="Shipping_Address" class="rounded-pill" name="Shipping_Address"
+            value="@ViewBag.Customer.Shipping_Address" asp-for="@Model.Shipping_Address" /> *@
+
+            <label for="cities">Select a city</label>
+            <select id="cities" class="rounded-pill" name="city">
+
+                <option value="cairo">Cairo</option>
+                <option value="alexandria">Alexandria</option>
+                <option value="qalubia">Qalubia</option>
+                <option value="giza">Giza</option>
+                <option value="sharm_el_sheikh">Sharm El-Sheikh</option>
+                <option value="luxor">Luxor</option>
+                <option value="aswan">Aswan</option>
+                <option value="hurghada">Hurghada</option>
+                <option value="ismailia">Ismailia</option>
+                <option value="mansoura">Mansoura</option>
+                <option value="sohag">Sohag</option>
+                <option value="port_said">Port Said</option>
+                <option value="damietta">Damietta</option>
+                <option value="menoufia">Menoufia</option>
+                <option value="asyut">Asyut</option>
+                <option value="bani_sweif">Bani sweif</option>
+
+                bani sweif
+            </select>
+            <label for="street">Street<label class="text-danger"> * </label></label>
+            <span class="text-danger fs-4" asp-validation-for="@Model.street"></span>
+            <input type="text" id="street" class="rounded-pill" name="street"
+                   asp-for="@Model.street" value="@Model.street" />
+
+            <label for="Build">Build<label class="text-danger"> * </label></label>
+            <span class="text-danger fs-4" asp-validation-for="@Model.Build"></span>
+            <input type="number" id="Build" class="rounded-pill" name="Build"
+                   asp-for="@Model.Build" value="@Model.Build" />
+
+            <label for="Floor">Floor</label>
+            <span class="text-danger fs-4" asp-validation-for="@Model.Floor"></span>
+            <input type="number" id="Floor" class="rounded-pill" name="Floor"
+                   asp-for="@Model.Floor" value="@Model.Floor" />
+
+            <label for="Flat">Flat</label>
+            <span class="text-danger fs-4" asp-validation-for="@Model.Flat"></span>
+            <input type="number" id="Flat" class="rounded-pill" name="Flat"
+                   asp-for="@Model.Flat" value="@Model.Flat" />
+
+            <label for="Location">Location</label>
+            <span class="text-danger fs-4" asp-validation-for="@Model.Location"></span>
+            <input type="text" id="Location" class="rounded-pill" name="Location"
+                   asp-for="@Model.Location" value="@Model.Location" />
+
+            <label for="DistinctiveMark">DistinctiveMark</label>
+            <span class="text-danger fs-4" asp-validation-for="@Model.DistinctiveMark"></span>
+            <input type="text" id="DistinctiveMark" class="rounded-pill" name="DistinctiveMark"
+                   asp-for="@Model.DistinctiveMark" value="@Model.DistinctiveMark" />
+            
+            <button type="submit" class="placeOrderbtn rounded-pill">Edit Address</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+}

@@ -1,0 +1,185 @@
+﻿@model BookXtation.DAL.Models.ViewModels.UserRoleViewModel
+
+@{
+    ViewData["Title"] = "Users and Roles";
+}
+
+<h1>Users</h1>
+
+@if (TempData["Success"] != null)
+{
+    <div id="successAlert" class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div id="errorAlert" class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Role</th>
+            <th>Assign</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+<td>
+                    @{
+                        var roles = Model.UserRoles.ContainsKey(user) ? Model.UserRoles[user] : new List<string>();
+                    }
+                    @if (roles.Any())
+                    {
+                        <ul>
+                            @foreach (var role in roles)
+                            {
+                                <li>
+                                    @role
+                                    <form asp-action="RemoveRoleFromUser" method="post" class="d-inline" style="display:inline;">
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <input type="hidden" name="roleName" value="@role" />
+                                        <button type="submit" class="btn btn-link p-0 text-danger" onclick="return confirm('Are you sure you want to remove this role from the user?');">X</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p>No roles assigned</p>
+                    }
+                </td>
+                <form asp-action="AssignRole" method="post" class="form-inline">
+
+                <td>
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <div class="form-group">
+                            <select name="roleName" class="form-control">
+                                <option value="">Select a Role</option>
+                                @foreach (var role in Model.Roles)
+                                {
+                                    <option value="@role.Name">@role.Name</option>
+                                }
+                            </select>
+                        </div>
+                        
+                   
+                </td>
+
+                <td><button type="submit" class="btn btn-primary">Assign Role</button></td>
+                 </form>
+                <td>
+                    @{
+                        
+                        if (!roles.Contains("Admin"))
+                        {
+                            <a asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-warning">Edit</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">cannot be edited.</span>
+                        }
+                    }
+                </td>
+                <td>
+                    <form asp-action="DeleteUser" method="post" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                        @if (!roles.Contains("Admin"))
+                        {
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                        }
+                        else
+                        {
+                        <span class="text-muted">cannot be Deleted.</span>
+                        }
+                    </form>
+                </td>
+
+
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="AddNewUser" class="btn btn-success">Add New User</a>
+
+
+<h1 class="pt-5">Roles</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model.Roles)
+        {
+            <tr>
+                <td>@role.Name</td>
+                <td>
+                    <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post" onsubmit="return confirm('Are you sure you want to delete this role?');">
+                        @{
+                            var usersInRole = Model.Users.Where(user => Model.UserRoles.ContainsKey(user) && Model.UserRoles[user].Contains(role.Name)).ToList();
+                        }
+                        @if (role.Name != "Admin" && role.Name != "Editor")
+                        {
+                            @if (!usersInRole.Any())
+                            {
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Cannot delete, users assigned</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">Cannot delete @role.Name Role</span>
+                        }
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="AddNewRole" class="btn btn-success">Add New Role</a>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                var successAlert = document.getElementById("successAlert");
+                var errorAlert = document.getElementById("errorAlert");
+                
+                if (successAlert) {
+                    successAlert.style.opacity = 0;
+                    setTimeout(function() {
+                        successAlert.style.display = 'none';
+                    }, 500); 
+                }
+
+                if (errorAlert) {
+                    errorAlert.style.opacity = 0;
+                    setTimeout(function() {
+                        errorAlert.style.display = 'none';
+                    }, 500); 
+                }
+            }, 5000); 
+        });
+    </script>
+}

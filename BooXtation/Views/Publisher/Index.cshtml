@@ -1,0 +1,43 @@
+﻿@model IEnumerable<BookXtation.DAL.Models.Data.Publisher>
+
+@* @{
+    ViewBag.Title = "Publishers";
+} *@
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.Title = "Publishers";
+}
+
+<h2>Publishers</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Publisher</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Phone</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Address</td>
+                <td>@item.Contact</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Publisher_ID" class="btn btn-secondary">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Publisher_ID" class="btn btn-info">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Publisher_ID" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -1,0 +1,54 @@
+﻿@model IEnumerable<BookXtation.DAL.Models.Data.Author>
+
+@* @{
+    ViewBag.Title = "Authors List";
+} *@
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.Title = "Authors List";
+}
+
+<h2>Authors List</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Author</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Author Name</th>
+            <th>Books</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var author in Model)
+        {
+            <tr>
+                <td>@author.Name</td>
+                <td>
+                    @if (author.Books != null && author.Books.Any())
+                    {
+                        <ul>
+                            @foreach (var book in author.Books)
+                            {
+                                <li>@book.Title</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>No Books</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@author.Author_ID" class="btn btn-secondary">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@author.Author_ID" class="btn btn-info">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@author.Author_ID" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

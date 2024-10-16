@@ -1,0 +1,24 @@
+﻿@model BookXtation.DAL.Models.ViewModels.CategoryViewModel  
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; // Specify the layout for the view
+    ViewBag.Title = "Create Category"; // Set the title for the view
+}
+
+<h2>Create Category</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mt-3"> <!-- Add mt-3 here for spacing -->
+        <div class="d-flex">
+            <input type="submit" value="Create" class="btn btn-primary me-2" />
+            <a asp-controller="Admin" asp-action="ViewCategories" class="btn btn-secondary">View All Categories</a>
+        </div>
+    </div>
+</form>
+

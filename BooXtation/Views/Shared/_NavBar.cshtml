@@ -1,0 +1,238 @@
+﻿@using BooXtation.Areas.Identity.Pages.Account
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+
+<header class="header"  data-header>
+    <div class="header-bottom" >
+        <div class="container">
+            <div class="container">
+
+                <a asp-controller="Book" asp-action="Index" class="logo">
+                    <img src="~/assets/images/darkLogo.svg" width="138" height="28" alt="BooXtation home">
+                </a>
+
+                <form method="get" asp-controller="Book" asp-action="GetAllBookWithSpecs" class="m-2">
+
+                <div class="input-wrapper">
+                    <div class="search-bar  pl-20">
+                        <input type="search" id="search" name="search" placeholder="Search our store"
+                                   value="@ViewContext.HttpContext.Request.Query["Search"]">
+                        <button class="search-btn" id="search-btn" aria-label="Search">
+                            <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+                        </button>
+                    </div>
+                </div>
+                </form>
+
+                <nav class="navbar" data-navbar>
+
+                    <button class="nav-close-btn" data-nav-toggler aria-label="clsoe menu" title="Clsoe Menu">
+                        <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
+                    </button>
+
+                    <div class="navbar-top">
+                        
+                        <input type="search" name="search" placeholder="Search our store" class="input-field">
+                        <button class="search-btn" aria-label="Search">
+                            <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+                        </button>
+                    </div>
+
+                    <ul class="navbar-list">
+
+                        <li>
+                            <a class="navbar-link" asp-area="" asp-controller="Book" asp-action="Index">Home</a>
+                        </li>
+
+                        <li>
+                            <a class="navbar-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+
+                        <li>
+                            <a class="navbar-link" asp-area="" asp-controller="Book" asp-action="GetAllBookWithSpecs">Shop</a>
+                        </li>
+
+                        <li>
+                            <a class="navbar-link" asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a>
+                        </li>
+
+                        <li>
+                            <a class="navbar-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+                <div class="header-action">
+
+                    <a class="header-action-btn" asp-controller="Shopping_Cart" asp-action="ViewCart"
+                                   aria-label="cart" title="Cart">
+                        
+                        <span class="span cart-count"></span>
+
+                        <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+                    </a>
+
+
+                   
+                        <button class="header-action-btn" aria-label="user" title="User" id="userButton">
+                            <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+                        </button>
+                    
+
+                    <div id="userPopover" class="pop_overStyle">
+                        
+                            @if (!SignInManager.IsSignedIn(User))
+                            {
+                                <div class="login-form-head d-flex justify-content-between align-content-center mb-2 mx-1">
+                                    @* <span class="login-form-title">Sign in</span> *@
+
+
+                                <a id="login" class="lostpass-link" asp-area="Identity" asp-page="/Account/Login">Signin</a>
+                                    
+                                    <span class="pull-right">
+                                        <a class="register-link" id="register" asp-area="Identity" asp-page="/Account/Register">Create an Account</a>
+                                    </span>
+                                </div>
+                            <form id="loginForm" method="post" asp-area="Identity" asp-page="/Account/Login">
+                                <input type="text" name="Input.Email" class="PopoverInput w-100" placeholder="Email or Username" />
+                                <input type="password" name="Input.Password" class="PopoverInput w-100" placeholder="Password" />
+
+                                <input type="submit" class="PopoversubmitInput PopoverInput w-100" value="LOGIN" />
+                                
+                            </form>
+
+                                
+                                <div class="login-form-bottom">
+                                    <a class="lostpass-link" asp-area="Identity" asp-page="/Account/ForgotPassword" title="Lost your password?">Lost your password?</a>
+                                </div>
+                                @* <li class="nav-item">
+                                    <a class="navbar-link" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="navbar-link" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                                </li> *@
+                            }
+                            else if (SignInManager.IsSignedIn(User))
+                            {
+
+                            <div class="navbar-link">Hello @UserManager.GetUserName(User)!</div>
+                                
+                          
+                                var user = UserManager.GetUserAsync(User).Result;
+                                var isCustomer = user != null && UserManager.IsInRoleAsync(user, "Customer").Result;
+                                var IsAdmin = user != null && UserManager.IsInRoleAsync(user, "Admin").Result;
+
+
+                                @if (isCustomer)
+                                {
+                                    <a id="manage" class="navbar-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+                                        <span class="span">Manage Profile</span>
+                                    </a>
+                                    
+                                    <a id="manage" class="navbar-link d-block" asp-controller="FavouriteBooks" asp-action="ViewWishList" title="Manage">
+                                        <span class="span">My WishList</span>
+                                    </a>
+
+                                    <a id="manage" class="navbar-link" asp-controller="Order" asp-action="ShowCustomerOrders" title="Manage">
+                                        <span class="span">My Last Orders</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a id="manage" class="navbar-link" asp-area="Identity" asp-page="/Account/Manage/ProfileUser" title="Manage">
+                                        <span class="span">Manage Profile</span>
+                                    </a>
+                                    <br />
+                                    @if (IsAdmin)
+                                    {
+                                        <a id="manage" class="navbar-link d-block" asp-controller="ManageUsers" asp-action="Index" title="Manage Users">
+                                            <span class="span">Manage Users</span>
+                                        </a>
+                                    }
+
+                                    <a id="manage" class="navbar-link" asp-controller="admin" asp-action="Index" title="Admin Dashboard">
+                                            <span class="span">Admin Dashboard</span>
+                                    </a>
+                                }
+                                
+                                <form id="logoutForm"  asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Book", new { area = "" })">
+                                <button id="logout" type="submit" class="PopoversubmitInput PopoverInput w-100">Logout</button>
+                                </form>
+                            }
+
+                    </div>
+
+       
+
+                    <button class="nav-open-btn" aria-label="open menu" title="Open Menu" data-nav-toggler>
+                        <ion-icon name="menu-outline" aria-hidden="true"></ion-icon>
+                    </button>
+
+
+
+
+                </div>
+
+            </div>
+            
+
+
+
+        </div>
+    </div>
+
+    <div class="overlay" data-overlay data-nav-toggler></div>
+</header>
+
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+     
+    document.addEventListener('DOMContentLoaded', function() {
+    const userButton = document.getElementById('userButton');
+    const popover = document.getElementById('userPopover');
+
+    userButton.addEventListener('click', function() {
+        const isPopoverVisible = popover.style.display === 'block';
+        popover.style.display = isPopoverVisible ? 'none' : 'block';
+    });
+
+    // Optional: Hide popover if clicking outside of it
+    document.addEventListener('click', function(event) {
+        if (!userButton.contains(event.target) && !popover.contains(event.target)) {
+            popover.style.display = 'none';
+        }
+    });
+    });
+        
+
+    $(document).ready(function () {
+        updateCartCount()
+        var cartSpan = document.querySelector('.cart-count');
+
+        function updateCartCount() {
+            $.ajax({
+                url: '/Cart_Item/GetCountOfItems',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    $('.cart-count').text(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching cart count:", error);
+                }
+            });
+        }
+    });
+</script>
+    
+

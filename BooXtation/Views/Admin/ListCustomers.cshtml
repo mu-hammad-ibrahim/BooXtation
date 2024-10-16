@@ -1,0 +1,78 @@
+﻿@model IEnumerable<BookXtation.DAL.Models.Data.Customer>
+
+@{
+    ViewData["Title"] = "List of Customers with Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table id="datatablesSimple" class="display">
+    <thead>
+        <tr>
+            <th>Customer ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Phone</th>
+            <th>Date of Birth</th>
+            <th>Address</th> <!-- Column for all customer details -->
+            <th>Actions</th> <!-- Actions Column -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model)
+        {
+            <tr>
+                <td>@customer.Customer_ID</td>
+                <td>@customer.FirstName</td>
+                <td>@customer.LastName</td>
+                <td>@customer.Phone</td>
+                <td>@(customer.DateOfBirth?.ToString("yyyy-MM-dd") ?? "N/A")</td>
+                <td>
+                    <!-- Display all details in a single cell -->
+                    @if (customer.customerDetails != null && customer.customerDetails.Any())
+                    {
+                        @foreach (var detail in customer.customerDetails)
+                        {
+                            <div>
+                              @detail.City, @detail.street, Bldg @detail.Build,
+                                Floor @detail.Floor , Flat @detail.Flat  <br />
+                                @if (!string.IsNullOrEmpty(detail.Location))
+                                {
+                                    <strong>Location:</strong> @detail.Location <br />
+                                }
+
+                                @if (!string.IsNullOrEmpty(detail.DistinctiveMark))
+                                {
+                                    <strong>Mark:</strong> @detail.DistinctiveMark <br />
+                                }
+
+                            </div>
+                        
+                        }
+                    }
+                    else
+                    {
+                        <span>No Details Available</span>
+                    }
+                </td>
+                <td>
+                    <!-- Order Button linked to another page -->
+                    <a asp-action="order" asp-route-id="@customer.Customer_ID" class="btn btn-secondary">Order</a> 
+          
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#datatablesSimple').DataTable({
+                "searching": true,
+                "paging": true,
+                "ordering": true
+            });
+        });
+    </script>
+}

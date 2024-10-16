@@ -1,0 +1,52 @@
+[
+  {
+    "Name": "Alpha Publishing",
+    "Contact": "123-456-7890",
+    "Address": "123 Main St, New York, NY"
+  },
+  {
+    "Name": "Beta Books",
+    "Contact": "987-654-3210",
+    "Address": "456 Elm St, Chicago, IL"
+  },
+  {
+    "Name": "Gamma Press",
+    "Contact": "555-123-4567",
+    "Address": "789 Oak Ave, Los Angeles, CA"
+  },
+  {
+    "Name": "Delta Publishing",
+    "Contact": "444-987-6543",
+    "Address": "321 Pine St, Houston, TX"
+  },
+  {
+    "Name": "Epsilon Publishers",
+    "Contact": "333-222-1111",
+    "Address": "654 Cedar Rd, Seattle, WA"
+  },
+  {
+    "Name": "Zeta House",
+    "Contact": "222-333-4444",
+    "Address": "987 Maple Blvd, Miami, FL"
+  },
+  {
+    "Name": "Eta Publishing Group",
+    "Contact": "111-444-5555",
+    "Address": "111 Birch Ln, Boston, MA"
+  },
+  {
+    "Name": "Theta Books",
+    "Contact": "777-888-9999",
+    "Address": "222 Spruce St, Denver, CO"
+  },
+  {
+    "Name": "Iota Publishing",
+    "Contact": "666-777-8888",
+    "Address": "333 Willow St, San Francisco, CA"
+  },
+  {
+    "Name": "Kappa Press",
+    "Contact": "999-000-1111",
+    "Address": "444 Redwood Dr, Austin, TX"
+  }
+]

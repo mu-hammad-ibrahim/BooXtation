@@ -1,0 +1,29 @@
+﻿@model BookXtation.DAL.Models.Data.Author
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; // Specify the layout for the view
+    ViewBag.Title = "Delete Author"; // Set the title for the view
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+<h2>Delete Author</h2>  
+
+<div>
+    <h4>@Model.Name</h4>
+    <p>Are you sure you want to delete this author?</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Author_ID" />
+    <input type="submit" value="Delete" class="btn btn-danger" />
+    <a class="btn btn-secondary" asp-controller="admin" asp-controller="ViewAuthors" asp-action="ViewAuthors">Cancel</a>
+    <!-- Back to List button -->
+    <a class="btn btn-outline-primary" asp-controller="admin" asp-controller="ViewAuthors" asp-action="ViewAuthors" >Back to View Authors</a>
+   
+    </a>
+</form>

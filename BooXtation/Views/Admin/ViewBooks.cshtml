@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Book>
+
+@{
+    ViewData["Title"] = "List of Books";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container">
+    <h2 class="h2 section-title">Book Collections</h2>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i> Book Collections
+        </div>
+        <div class="card-body">
+            <table id="datatablesSimple" class="display table table-striped">
+                <thead>
+                    <tr>
+                        <th>Cover</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="text-align:center;">
+                                <img src="~/files/images/@item.Cover_Image" alt="" style=" height: 100px;" />
+                            </td>
+                            <td>@item.Title</td>
+                            <td>@item.Author.Name</td>
+                            <td>@item.Category.Name</td>
+                            <td>$@item.Price</td>
+                            <td>
+                                @if (item.Stock > 10)
+                                {
+                                    <span class="badge bg-success text-white">AVAILABLE</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger text-white">LOW STOCK</span>
+                                }
+                            </td>
+                            <td>
+                                <a class="btn btn-warning btn-sm" asp-controller="Book" asp-action="Edit" asp-route-id="@item.Book_ID">Edit</a>
+                                <a class="btn btn-danger btn-sm" asp-controller="Book" asp-action="Delete" asp-route-id="@item.Book_ID">Delete</a>
+                                <a class="btn btn-info btn-sm" asp-controller="admin" asp-action="BookDetails" asp-route-id="@item.Book_ID">Details</a>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery and DataTable JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#bookTable').DataTable({
+                "searching": true, // Enables search functionality
+                "paging": true,    // Enables pagination
+                "ordering": true   // Enables column sorting
+            });
+        });
+    </script>
+}

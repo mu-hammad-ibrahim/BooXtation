@@ -1,0 +1,174 @@
+﻿@model IEnumerable<Book>
+
+@{
+    ViewData["Title"] = "List of Books";
+}
+
+@{
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+<div class="row">
+    <h2 class="h2 section-title">Featured Collections</h2>
+    <p class="section-text">
+        Explore our handpicked selections of must-read books .
+    </p>
+    <ul class="grid-list">
+        @foreach (var item in Model)
+        {
+            <li>
+                <div class="product-card">
+
+                    <div class="card-banner img-holder mb-2" style="--width: 384; --height: 480; position: relative;">
+                        <img src="~/files/images/@item.Cover_Image" width="384" height="480" style="object-fit: contain;" loading="lazy" alt="@item.Title"
+                             class="img-cover rounded">
+
+                        <!-- Stock Badge -->
+                        @if (item.Stock == 0)
+                        {
+                            <span class="badge bg-danger text-white" style="position: absolute; top: 10px; left: 10px;">OUT OF STOCK</span>
+                        }
+                        else if (item.Stock > 10)
+                        {
+                            <span class="badge bg-success text-white" style="position: absolute; top: 10px; left: 10px;">AVAILABLE</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-white" style="position: absolute; top: 10px; left: 10px;">@item.Stock Books Left</span>
+                        }
+
+                        <div class="card-action">
+                            <!-- Quick View -->
+                            <a class="action-btn" aria-label="quick view" title="Quick View" asp-action="Details" asp-route-id="@item.Book_ID">
+                                <ion-icon name="eye-outline" aria-hidden="true"></ion-icon>
+                            </a>
+
+                            <a class="action-btn cur-pointer" id="add-to-wishlist" aria-label="add to wishlist" title="Add to Wishlist"
+                               onclick="AddToWish(@item.Book_ID)">
+                                <ion-icon name="heart-outline" class="add-to-wishlist"
+                                          id="add-to-wishlist-@item.Book_ID" aria-hidden="true" data-Book_ID="@item.Book_ID"></ion-icon>
+                            </a>
+
+                            <a class="action-btn cur-pointer" id="add-to-cart" aria-label="add to cart" title="Add to Cart"
+                                onclick="AddItem(@item.Book_ID)">
+                                <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+                            </a>
+                        </div>
+                    </div>
+
+
+                    <div class="card-content">
+
+                        <h3>
+                            <a asp-action="Details" asp-route-id="@item.Book_ID" class="card-title" title="@item.Title">
+                                @(item.Title.Length > 25 ? item.Title.Substring(0, 23) + "..." : item.Title)
+                            </a>
+                        </h3>
+
+
+                        <data class="card-price" value="@item.Price">$@item.Price</data>
+                        <span class="text-decoration-line-through fw-bold" value="@item.ActualPrice">$@item.ActualPrice</span>
+
+
+
+                    </div>
+
+                </div>
+            </li>
+        }
+
+</div>
+</ul>
+
+
+@await Html.PartialAsync("_CreateBook", "Book")
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+@section Scripts{
+
+<script>
+    function AddItem(Book_ID) {
+            $.ajax({
+                url: '/Cart_Item/addBookToCart_items',
+                type: 'POST',
+                data: {Book_ID: Book_ID},
+                success: function (response) {
+
+                    $.ajax({
+                        url: '/Cart_Item/GetCountOfItems',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            $('.cart-count').text(data);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error fetching cart count:", error);
+                        }
+                    });
+                },
+
+                error: function () {
+                    console.log("Not Authorize");
+                }
+            });
+
+            
+           
+     };
+       
+     function AddToWish(Book_ID) {
+
+            $.ajax({
+                url: '/FavouriteBooks/AddBookToFavouriteList',
+                type: 'POST',
+                data: {Book_ID: Book_ID},
+                success: function (response) {
+                    
+                    if (response.massage == "added") {
+                        $(`#add-to-wishlist-${Book_ID}`).addClass('text-danger');
+                        $(`#add-to-wishlist-${Book_ID}`).attr('name', "heart");
+                    } else {
+                        $(`#add-to-wishlist-${Book_ID}`).removeClass('text-danger');
+                        $(`#add-to-wishlist-${Book_ID}`).attr('name', "heart-outline");
+                    }
+                },
+
+                error: function () {
+                    console.log("Not Authorize");
+                }
+            });
+     };
+    ChecKHeart();
+    function ChecKHeart (){
+            $('.add-to-wishlist').each(function(e) {
+                var Book_ID = $(this).data("book_id");
+                $.ajax({
+                    url: '/FavouriteBooks/CheckFavouriteForHeartDesign',
+                    type: 'POST',
+                    data: { Book_ID: Book_ID },
+                    success: function (response) {
+
+                        if (response.massage == "added") {
+                            $(`#add-to-wishlist-${Book_ID}`).addClass('text-danger');
+                            $(`#add-to-wishlist-${Book_ID}`).attr('name', "heart");
+                            console.log("added")
+                        } 
+                        // else {
+                        //     console.log("deleted")
+                        //     $(`#add-to-wishlist-${Book_ID}`).removeClass('text-danger');
+                        //     $(`#add-to-wishlist-${Book_ID}`).attr('name', "heart-outline");
+                        // }
+                    },
+
+                    error: function () {
+                        console.log("Not Authorize");
+                    }
+                });
+            })
+            
+    };
+</script>
+
+
+}

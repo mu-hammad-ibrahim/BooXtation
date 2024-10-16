@@ -1,0 +1,16 @@
+﻿@model Stripe.Charge
+
+<h1>Payment Status</h1>
+@if (TempData["ChargeError"] != null)
+{
+    <span class="text-danger">@TempData["ChargeError"]</span>
+
+}
+else
+{
+    <p>Charge ID: @Model.Id</p>
+    <p>Status: @Model.Status</p>
+    <p>Amount: $@(Model.Amount/100)</p>
+    <p>Currency: @Model.Currency</p>
+    <p>Created At: @Model.Created</p>
+}

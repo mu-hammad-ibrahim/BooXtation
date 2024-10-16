@@ -1,0 +1,160 @@
+﻿@model PaymentRequestViewModel
+@{
+    ViewBag.Title = "Create Payment";
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+
+<section>
+<div class="row d-flex justify-content-center">
+    <div class="col-md-10 col-lg-8 col-xl-5">
+        <div class="card rounded-3">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                   <h2>Payment</h2>
+                    
+                </div>
+                <form asp-action="PayOrder" method="post" id="payment-form">
+                        <input type="number" value="@ViewBag.paymentDetails.Amount" asp-for="Amount" hidden />
+                        <input type="number" value="@ViewBag.paymentDetails.Payment_ID" asp-for="Payment_ID" hidden />
+                    <img class="img-fluid" src="https://img.icons8.com/color/48/000000/mastercard-logo.png" />
+                    <img class="img-fluid" src="https://img.icons8.com/color/48/000000/visa.png" />
+
+                    <p class="fw-bold mb-4">Add new card:</p>
+
+                    <div data-mdb-input-init class="form-outline mb-4">
+                        <input type="text" id="card-holder-name" class="form-control form-control-lg"
+                                   name="cardHolderName" required/>
+
+                        
+                        <label class="form-label" for="formControlLgXsd">Cardholder's Name</label>
+                    </div>
+
+                    <div class="row mb-4" id="card-element">
+                        <div class="col-7">
+                            <div data-mdb-input-init class="form-outline">
+                                @* <input type="text" id="formControlLgXM" class="form-control form-control-lg"
+                                      asp-for="@Model.CardNumber"  value="" /> *@
+                                 <div id="card-number-element" class="form-control form-control-lg"></div>
+
+                                <label class="form-label" for="formControlLgXM">Card Number</label>
+                                <div id="card-number-errors" role="alert"></div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div data-mdb-input-init class="form-outline">
+                                    @* <input type="text" id="card-expiry-month formControlLgExpk" class="form-control form-control-lg"
+                                           asp-for="@Model.ExpiryMonth" placeholder="MM" maxlength="2" />
+                                    <label class="form-label" for="formControlLgExpk">Expire Month</label>
+
+                                    <input type="text" id="card-expiry-year formControlLgExpk" class="form-control form-control-lg"
+                                           asp-for="@Model.ExpiryYear" placeholder="yy" maxlength="2" /> *@
+                                    <div id="card-expiry-element" class="form-control form-control-lg"></div>
+                                    <label class="form-label" for="formControlLgExpk">Expire year</label>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                                <div data-mdb-input-init class="form-outline">
+                                    @* <input type="password" id="formControlLgcvv" class="form-control form-control-lg"
+                                       asp-for="@Model.Cvc" placeholder="Cvv" /> *@
+                                    <div id="card-cvc-element" class="form-control form-control-lg"></div>
+                                <label class="form-label" for="formControlLgcvv">Cvv</label>
+                            </div>
+                        </div>
+                    </div>
+
+                        <button data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-lg btn-block">Pay @ViewBag.paymentDetails.Amount $</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+@* <div class="row">
+    <div class="container col-md-2 col-md-offset-5">
+        <h5>Upgrade your account</h5>
+        <form action="/CreditCard/Charge" method="POST">
+            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                    data-key="pk_test_6pRNASCoBOKtIshFeQd4XMUh"
+                    data-amount="1000"
+                    data-name="My Project Name"
+                    data-description="Premium Account (€10)"
+                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                    data-locale="auto"
+                    data-zip-code="true"
+                    data-currency="eur">
+            </script>
+        </form>
+    </div>
+</div> *@
+
+
+@section ScriptsHead {
+    <script src="https://js.stripe.com/v3/"></script>
+}
+    <script>
+    console.log("0");
+        var stripe = Stripe("pk_test_51Q5lHxLgpmT4rWLgBFu7mFUs9tww7TjP9zggyxwH8KrTtmIElgUdfQY80o7x7UyBrhB5PnpF7z35HMS87NJonIiR00w1As7oGx");
+
+        var elements = stripe.elements();
+        console.log("1");
+        var cardNumber = elements.create('cardNumber');
+        cardNumber.mount('#card-number-element');
+
+        var cardExpiryElement = elements.create('cardExpiry');
+        cardExpiryElement.mount('#card-expiry-element');
+
+        console.log("2");
+        var cardCvc = elements.create('cardCvc');
+        cardCvc.mount('#card-cvc-element');
+
+        cardNumber.on('change', function (event) {
+            var displayError = document.getElementById('card-number-errors');
+            displayError.textContent = event.error ? event.error.message : '';
+        });
+
+        // cardExpiry.on('change', function (event) {
+        //     var displayError = document.getElementById('card-expiry-errors');
+        //     displayError.textContent = event.error ? event.error.message : '';
+        // });
+        console.log("3");
+        cardCvc.on('change', function (event) {
+            var displayError = document.getElementById('card-cvc-errors');
+            displayError.textContent = event.error ? event.error.message : '';
+        });
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+           
+
+            var cardholderName = document.getElementById('card-holder-name').value;
+
+            console.log(cardholderName);
+
+            stripe.createToken(cardNumber).then(function (result) {
+                if (result.error) {
+                    console.log(result.message);
+                    var errorElement = document.getElementById('card-number-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+
+                    console.log("success");
+                    var hiddenInput = document.createElement('input');
+                    hiddenInput.setAttribute('type', 'hidden');
+                    hiddenInput.setAttribute('name', 'stripeToken');
+                    hiddenInput.setAttribute('value', result.token.id);
+                    form.appendChild(hiddenInput);
+
+                    var nameInput = document.createElement('input');
+                    nameInput.setAttribute('type', 'hidden');
+                    nameInput.setAttribute('name', 'cardHolderName');
+                    nameInput.setAttribute('value', cardholderName);
+                    form.appendChild(nameInput);
+
+
+                    form.submit();
+                }
+            });
+        });
+    </script>

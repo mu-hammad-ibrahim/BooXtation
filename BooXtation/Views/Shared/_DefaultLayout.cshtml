@@ -1,0 +1,321 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--
+      - primary meta tags
+    -->
+    <title>@ViewData["Title"] - BooXtation</title>
+    <meta name="title" content="BooXtation - Get Your New Book Collections">
+    <meta name="description" content="This is a Book eCommerce made by BooXtation Team">
+
+    <!--
+      - favicon
+    -->
+    <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
+
+    <!-- Include SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <!-- Include SweetAlert JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+    <!--
+      - custom css link
+    -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="~/assets/css/Cart_Order.css">
+
+
+
+    <!--
+      - google font link
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Work+Sans:wght@400;500;700&display=swap"
+          rel="stylesheet">
+
+    @RenderSection("ScriptsHead", required: false)
+
+</head>
+
+<body id="top">
+
+    <!--
+      - #HEADER
+    -->
+    @* <header class="header" data-header>
+    <div class="header-top">
+    <div class="container">
+
+    <a asp-area="" asp-controller="Book" asp-action="Index" class="logo">
+    <img src="~/assets/images/darkLogo.svg" width="138" height="28" alt="BooXtation home">
+    </a>
+
+    <div class="input-wrapper">
+    <input type="search" name="search" placeholder="Search our store" class="input-field">
+
+    <button class="btn btn-primary">Search</button>
+    </div>
+
+    <div class="header-action">
+
+    <button class="header-action-btn" aria-label="cart" title="Cart">
+    <span class="span">0</span>
+
+    <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+    </button>
+
+
+    @if (!SignInManager.IsSignedIn(User))
+    {
+    <button class="header-action-btn" aria-label="user" title="User" id="userButton">
+    <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+    </button>
+    }
+
+    <div id="userPopover" class="UserPopOver">
+    <ul class="navbar-nav">
+    @if (!SignInManager.IsSignedIn(User))
+    {
+    <li class="nav-item">
+    <a class="navbar-link" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    </li>
+    <li class="nav-item">
+    <a class="navbar-link" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    </li>
+    }
+    </ul>
+    </div>
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+    <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Book", new { area = "" })">
+    <button id="logout" type="submit" class="header-action-btn">Logout</button>
+    </form>
+    }
+
+    <button class="nav-open-btn" aria-label="open menu" title="Open Menu" data-nav-toggler>
+    <ion-icon name="menu-outline" aria-hidden="true"></ion-icon>
+    </button>
+
+
+
+
+    </div>
+
+    </div>
+    </div>
+
+    <div class="header-bottom" data-navbar>
+    <div class="container">
+
+    <nav class="navbar">
+
+    <button class="nav-close-btn" data-nav-toggler aria-label="clsoe menu" title="Clsoe Menu">
+    <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
+    </button>
+
+    <div class="navbar-top">
+    <input type="search" name="search" placeholder="Search our store" class="input-field">
+
+    <button class="search-btn" aria-label="Search">
+    <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+    </button>
+    </div>
+
+    <ul class="navbar-list">
+
+    <li>
+
+    <a class="navbar-link" asp-area="" asp-controller="Book" asp-action="Index">Home</a>
+    </li>
+
+    <li>
+    <a class="navbar-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    </li>
+
+    <li>
+
+    <a href="#" class="navbar-link">Shop</a>
+    </li>
+
+    <li>
+    <a href="#" class="navbar-link">About Us</a>
+    </li>
+
+    <li>
+    <a href="#" class="navbar-link">Contact</a>
+    </li>
+
+    </ul>
+
+    </nav>
+    @if (SignInManager.IsSignedIn(User))
+    {
+    <a id="manage" class="header-contact-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+    <span class="span">Hello @UserManager.GetUserName(User)!</span>
+    </a>
+    }
+
+    </div>
+    </div>
+
+    <div class="overlay" data-overlay data-nav-toggler></div>
+
+    </header> *@
+
+    @Html.Partial("_Navbar")
+
+    <div class="container">
+        <hr>
+        <main role="main" class="p-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <br>
+
+    <footer class="footer has-bg-image" style="background-image: url('@Url.Content("~/assets/images/section-bg.jpg")')">
+
+        <div class="footer-top section">
+            <div class="container grid-list">
+
+                <div class="footer-brand">
+
+                    <a href="#" class="logo">
+                        <img src="/assets/images/logo.svg" width="138" height="28" alt="BooXtation home">
+                    </a>
+
+                    <p class="footer-text">
+                        Thank you for choosing BooXtation, where every book finds its reader. 
+                        We're here when you need us, 
+                        offering a curated selection and support for your literary journey.
+
+                    </p>
+
+                    <ul class="social-list">
+
+                        <li>
+                            <a href="https://www.facebook.com/BooXtation" target="_blank" class="social-link">
+                                <ion-icon name="logo-facebook"></ion-icon>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="https://www.twitter.com/BooXtation" target="_blank" class="social-link">
+                                <ion-icon name="logo-twitter"></ion-icon>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="https://www.instagram.com/BooXtation" target="_blank" class="social-link">
+                                <ion-icon name="logo-instagram"></ion-icon>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="https://www.youtube.com/BooXtation" target="_blank" class="social-link">
+                                <ion-icon name="logo-youtube"></ion-icon>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="https://www.pinterest.com/BooXtation" target="_blank" class="social-link">
+                                <ion-icon name="logo-pinterest"></ion-icon>
+                            </a>
+                        </li>
+
+                    </ul>
+
+
+                </div>
+                
+   
+                <ul class="footer-list">
+                    <li><p class="footer-list-title">Get In Touch</p></li>
+                    <li><a class="footer-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a></li>
+                    <li><a href="mailto:support@booxtation.com" class="footer-link">support@booxtation.com</a></li>
+                    <li><a href="#" class="footer-link">Phone: +20 123 456 7890</a></li>
+                    <li><p class="footer-link">Address: Cairo, Egypt</p></li>
+                </ul>
+
+                <ul class="footer-list"></ul>
+
+                <ul class="footer-list">
+                    <li><p class="footer-list-title">Quick Links</p></li>
+                    <li><a class="footer-link" asp-area="" asp-controller="Book" asp-action="Index">Home</a></li>
+                    <li><a class="footer-link" asp-area="" asp-controller="Book" asp-action="GetAllBookWithSpecs">Shop</a></li>
+                    <li><a class="footer-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a></li>
+                    <li><a class="footer-link" asp-area="" asp-controller="Home" asp-action="AboutUs">About Us</a></li>
+                    <li><a class="footer-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a></li>
+                </ul>
+
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container">
+
+                <p class="copyright">
+                    Copyright 2024 | Made by BooXtation Team.
+                </p>
+
+                <img src="~/assets/images/payment-mehtod.png" width="311" height="30" loading="lazy" alt="Payment method"
+                     class="w-100">
+
+            </div>
+        </div>
+
+    </footer>
+
+
+
+
+
+    <!--
+      - #BACK TO TOP
+    -->
+
+    <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
+        <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+    </a>
+
+
+
+
+
+    <!--
+      - custom js link
+    -->
+    <script src="~/assets/js/script.js" defer></script>
+
+    <!--
+      - ionicon link
+    -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

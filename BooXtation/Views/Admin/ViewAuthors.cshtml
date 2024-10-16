@@ -1,0 +1,63 @@
+﻿@model IEnumerable<BookXtation.DAL.Models.Data.Author>
+
+@{
+    ViewData["Title"] = "List of Authors";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<div class="container">
+    <h2 class="h2 section-title">Author Collections</h2>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i> Author Collections
+        </div>
+        <div class="card-body">
+            <table id="datatablesSimple" class="display table table-striped">
+                <thead>
+                    <tr>
+                        <th>Author Name</th>
+                        <th>Books Count</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Books.Count()</td>
+                            <td>
+                                <a class="btn btn-warning btn-sm" asp-controller="Author" asp-action="Edit" asp-route-id="@item.Author_ID">Edit</a>
+                                <a class="btn btn-danger btn-sm" asp-controller="Author" asp-action="Delete" asp-route-id="@item.Author_ID">Delete</a>
+                                <a class="btn btn-info btn-sm" asp-controller="Author" asp-action="Details" asp-route-id="@item.Author_ID">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery and DataTable JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#datatablesSimple').DataTable({
+                "searching": true, // Enables search functionality
+                "paging": true,    // Enables pagination
+                "ordering": true   // Enables column sorting
+            });
+        });
+    </script>
+}

@@ -1,0 +1,250 @@
+﻿@model OrderViewModel
+@{
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+}
+
+<div class="mainTitle">Order</div>
+<form asp-action="PlaceOrder" id="order-form" method="post">
+    <h1 class="fw-semibold">Billing details</h1>
+    <div class="container d-lg-flex gap-4 billingInfo">
+        <div class="customerInfo d-flex flex-column mt-3">
+            <input type="hidden" name="Customer_ID" value="@ViewBag.Customer.Customer_ID" asp-for="Customer_ID" />
+            
+            
+           
+                @if(ViewBag.Customer.customerDetails.Count == 0)
+                {
+                    @if (TempData["NotChecked"] != null)
+                    {
+                        <span class="text-danger fs-4">@TempData["NotChecked"]</span>
+                    }
+                   <a class="py-2 px-4 my-2 address-anchor" asp-action="AddNewAddress" asp-route-Customer_ID="@ViewBag.Customer.Customer_ID">+ Create Address</a>
+                }
+                else{
+
+                    <div class="address-section mb-5">
+                    <a class="choose-address d-flex justify-content-between" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1"><span>Your Address</span><span>Show All Address &#11167; </span></a>
+                    <div class="collapse multi-collapse address-item show-collapse overflow-hidden" id="multiCollapseExample1">
+
+                                <div class="card card-body">
+                                    @* <div class="Payment_Method"> *@
+
+                                        @foreach(var item in ViewBag.Customer.customerDetails)
+                                        {
+                                             <div class="mb-4 pb-3 border-2 border-bottom d-flex">
+                                                <div class="container address-pointer">
+                                                    <div class="d-flex" data-target="@item.CustomerDetails_ID">
+                                                    
+
+                                                    <input type="radio" id="@item.CustomerDetails_ID" class="address-radio"  name="CustomerDetails_ID"
+                                                        value="@item.CustomerDetails_ID">
+                                                        <label for="@item.CustomerDetails_ID">@item.FirstName @item.LastName</label>
+                                                    </div>
+                                        
+                                                    <div class="mb-0 address-desc">
+                                                        @item.Build @item.street, @item.City, @item.Phone
+                                                        @if (item.Floor != null || item.Flat != null)
+                                                        {
+                                                            <br />
+                                                            <span>Floor Number : @item?.Floor, Flat Number : @item?.Flat</span>
+                                                        }
+                                                        @if (item.DistinctiveMark != null)
+                                                        {
+                                                            <br />
+                                                            <span>DistinctiveMark : @item?.DistinctiveMark</span>
+                                                        }
+                                                        else{
+                                                            <br />
+                                                            <br />
+                                                            <br />
+                                                        }
+                                            
+                                                    </div>
+                                                </div>
+                                    <a class="py-2 address-anchor" asp-action="EditAddress" asp-route-CustomerDetails_ID="@item.CustomerDetails_ID">Edit</a>
+                                            </div>
+                                        }
+                                    @* </div> *@
+                                    <a class="address-anchor py-3 px-4" asp-action="AddNewAddress" asp-route-Customer_ID="@ViewBag.Customer.Customer_ID">+ Add New Address</a>
+
+                                </div>
+                    
+
+                        </div>
+                    </div>
+                }
+            
+
+            <label for="payment" class="fw-400 fs-3 mx-0 mb-3">Select a payment method</label>
+            <div class="Payment_Method">
+                <div class="mb-4 pb-2">
+                    <input type="radio" id="credit_card" class="mb-2" asp-for="PaymentMethod" name="PaymentMethod" value="credit_card" checked>
+                    <label for="credit_card">Credit Card</label><br>
+                    <div id="credit_card_desc" class="mb-0 description show">
+                        Enter your credit card details for a secure payment.
+                    </div>
+                </div>
+                <div class="mb-4 pb-2">
+                    <input type="radio" id="Wallet" class="mb-2" asp-for="PaymentMethod" name="PaymentMethod" value="Wallet">
+                    <label for="Wallet">Wallet</label><br>
+                    <div id="Wallet_desc" class="mb-0 description">
+                        Pay With Any Of Bank or Mobile Wallet And Check Your Number Accurately
+                    </div>
+                </div>
+                <div class="mb-4 pb-2">
+                    <input type="radio" id="cash_on_delivery" asp-for="PaymentMethod" class="mb-2" name="PaymentMethod" value="cash_on_delivery">
+                    <label for="cash_on_delivery">Cash on Delivery</label><br>
+                    <div id="cash_on_delivery_desc" class="mb-0 description">
+                        Pay in cash when your order is delivered to your door.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="orderItems container">
+            <h1 class="fw-bold">Your order</h1>
+            <div class="d-flex justify-content-between checkoutHeader">
+                <h4>Product</h4>
+                <h4>Subtotal</h4>
+            </div>
+            <div class="productItems d-flex flex-column">
+                @for (var i = 0 ; i < Model._Items.Count; i++)
+                {
+
+                    //<input type="hidden" name="_Items[@i].book.Book_ID" value="@Model._Items[i].Book_ID" />
+                    <input type="hidden" name="_Items[@i].Book_ID" value="@Model._Items[i].Book_ID" asp-for="@Model._Items[i].Book_ID" />
+
+                    <input type="hidden" name="_Items[@i].book" data-val="false" value="@Model._Items[i].book" asp-for="@Model._Items[i].book" />
+
+                    <div class="d-flex justify-content-between bookCartInfo">
+                        <div class="w-75">
+                            <input type="text" class="forRead border-0"  value="@Model._Items[i].book.Title" hidden />
+                            <p class="bookTitle CartforRead border-0 d-inline" readonly>@Model._Items[i].book.Title</p>
+                            <span class="text-secondary">&nbsp;&nbsp; X </span>
+                            <input type="text" class="border-0" name="_Items[@i].Quantity" style="width: 4ch;" 
+                                    value="@Model._Items[i].Quantity" readonly />
+                        </div>
+                        <div class="w-25 d-flex justify-content-end align-items-start">
+                            <span>EGP </span>
+                            <input type="text" class="forRead subPrice border-0 text-end" name="_Items[@i].Price" 
+                                    value="@Model._Items[i].Price" readonly />
+
+                        </div>
+                    </div>
+
+                }
+                
+            </div>
+            <div class="totalOrderPrice d-flex justify-content-between align-items-center my-4">
+                <h4 class="mb-0 fs-2">TOTAL</h4>
+                <div class="">
+                    <span class="fw-bold fs-1 text-black">EGP</span>
+                    <span class="totalAmountText text-black text-end fw-bold fs-1"></span>
+                    <input type="hidden" class="forRead totalAmount border-0 text-end fw-bold fs-3" name="TotalAmount" value="" readonly />
+                </div>
+            </div>
+            <button type="submit" class="placeOrderbtn rounded-pill">Place Order</button>
+        </div>
+    </div>
+    
+    <input type="hidden" name="buttonAction" value="true" />
+    <input type="text" asp-for="PaymentStatus" name="PaymentStatus" value="Pending" hidden/>
+    <input type="text" asp-for="OrderStatus" name="OrderStatus" value="Pending" hidden />
+   
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+
+    var TotalPrice = 0;
+    var subPriceItems = document.querySelectorAll('.subPrice');
+    subPriceItems.forEach((item) => {
+        TotalPrice += parseFloat(item.value);
+    });
+
+    document.querySelector('.totalAmount').value = parseFloat(TotalPrice);
+    document.querySelector('.totalAmountText').innerHTML = parseFloat(TotalPrice.toFixed(2));
+    var forReads = document.querySelectorAll('.forRead');
+    forReads.forEach((item) => {
+        item.style.width = item.value.length + 'ch';
+    });
+
+
+
+    var firstRadioButton = document.querySelectorAll('.address-item .card-body div')[0].querySelector('.address-radio');
+    firstRadioButton.checked = "true";
+    document.querySelectorAll('.address-item .card-body div')[0].classList.add('checked');
+
+    document.querySelectorAll('.address-pointer').forEach(div => {
+        div.addEventListener('click', function() {
+
+            const targetId = this.querySelectorAll('div')[0].getAttribute('data-target');
+            const radioButton = document.getElementById(targetId);
+            radioButton.checked = "true";
+
+            document.querySelectorAll('.address-item .card-body div').forEach((e) => {
+                    e.classList.remove('checked');
+            })
+
+            div.parentElement.classList.add('checked');
+
+        });
+    });
+    
+
+    document.querySelector('.choose-address').addEventListener("click", () => {
+        var addressItem =  document.querySelector('.address-item');
+        addressItem.classList.toggle('show-collapse');
+
+        if (!addressItem.classList.contains("show-collapse")) {
+            document.querySelectorAll('.address-item .card-body div').forEach( (div) => {
+                div.classList.remove('d-none');
+            });
+        }
+        else{
+            document.querySelectorAll('.address-item .card-body >div:not(.checked)').forEach( (div) => {
+                div.classList.add('d-none');
+            });
+        }
+        
+
+    });
+        
+
+    document.querySelectorAll('input[name="PaymentMethod"]').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            
+            document.querySelectorAll('.description').forEach(function (desc) {
+                
+                desc.classList.remove('show');
+            });
+
+            
+            if (radio.checked) {
+                
+                document.getElementById(radio.id + '_desc').classList.add('show');
+            }
+        });
+    });
+
+    // document.querySelector("#order-form").addEventListener("submit", function (e) {
+    //     var selectedCity = document.getElementById("cities").value;
+    //     var addressField = document.getElementById("Shipping_Address");
+
+    //     if (selectedCity && addressField.value) {
+    //         addressField.value += ", " + selectedCity;
+    //     }
+    //     //  else if (selectedCity) {
+    //     //     addressField.value = selectedCity; 
+    //     // }
+    // });
+
+</script>
+

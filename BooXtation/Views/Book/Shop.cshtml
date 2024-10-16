@@ -1,0 +1,537 @@
+﻿@using BooXtation.Helpers
+
+@model PaginationData<Book>
+
+@{
+    ViewData["Title"] = "Book Shop";
+}
+
+
+    <div class="row">
+        <!-- Filters Section (Left Side) -->
+    <div class="col-12 col-md-3 mb-4 mt-1">
+            <form method="get" asp-action="GetAllBookWithSpecs" id="filterForm">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="mb-0">Filters</h2>
+                    <a href="#" class="link-secondary" id="clearFilters" onclick="clearFilters()">Clear Filters</a> 
+                </div>
+
+                @if (!string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["search"]))
+                {
+                    <input type="hidden" name="search" value="@ViewContext.HttpContext.Request.Query["search"]" />
+                }
+
+                @if (!string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["Sort"]))
+                {
+                    <input type="hidden" name="Sort" value="@ViewContext.HttpContext.Request.Query["Sort"]" />
+                }
+
+                <!-- Author Filter -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4>
+                            <a href="#authorsCollapse" class="collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse" aria-expanded="false" aria-controls="authorsCollapse">
+                                <span class="d-inline">Authors</span>
+                                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                            </a>
+                        </h4>
+                        <div class="collapse" id="authorsCollapse">
+                            <!-- Search Input -->
+                            <input type="text" id="authorSearch" placeholder="Search authors..." class="form-control mb-2" oninput="filterItems('authorSearch', '.author-item')">
+
+                            <ul class="list-unstyled" id="authorList">
+                                @foreach (var author in ViewBag.Author)
+                                {
+                                    <li class="author-item">
+                                        <div class="form-check">
+                                            <label class="form-check-label h5" for="author_@author.Value">
+                                                @author.Text
+                                            </label>
+                                            <input class="form-check-input" type="checkbox" name="AuthorIds" value="@author.Value"
+                                            @(ViewContext.HttpContext.Request.Query["AuthorIds"].Any(id => id == author.Value) ? "checked" : "")
+                                                   id="author_@author.Value" />
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories Filter -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4>
+                            <a href="#categoriesCollapse" class="collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse" aria-expanded="false" aria-controls="categoriesCollapse">
+                                <span class="d-inline">Categories</span>
+                                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                            </a>
+                        </h4>
+                        <div class="collapse" id="categoriesCollapse">
+                            <input type="text" id="categorySearch" placeholder="Search categories..." class="form-control mb-2" oninput="filterItems('categorySearch', '.category-item')">
+                            <ul class="list-unstyled" id="categoryList">
+                                @foreach (var category in ViewBag.Category)
+                                {
+                                    <li class="category-item">
+                                        <div class="form-check">
+                                            <label class="form-check-label h5" for="category_@category.Value">
+                                                @category.Text
+                                            </label>
+                                            <input class="form-check-input" type="checkbox" name="CategoryIds" value="@category.Value"
+                                            @(ViewContext.HttpContext.Request.Query["CategoryIds"].Any(id => id == category.Value) ? "checked" : "")
+                                                   id="category_@category.Value" />
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Publishers Filter -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4>
+                            <a href="#publishersCollapse" class="collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse" aria-expanded="false" aria-controls="publishersCollapse">
+                                <span class="d-inline">Publishers</span>
+                                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                            </a>
+                        </h4>
+                        <div class="collapse" id="publishersCollapse">
+                            <input type="text" id="publisherSearch" placeholder="Search publishers..." class="form-control mb-2" oninput="filterItems('publisherSearch', '.publisher-item')">
+                            <ul class="list-unstyled" id="publisherList">
+                                @foreach (var publisher in ViewBag.Publisher)
+                                {
+                                    <li class="publisher-item">
+                                        <div class="form-check">
+                                            <label class="form-check-label h5" for="publisher_@publisher.Value">
+                                                @publisher.Text
+                                            </label>
+                                            <input class="form-check-input" type="checkbox" name="PublisherIds" value="@publisher.Value"
+                                            @(ViewContext.HttpContext.Request.Query["PublisherIds"].Any(id => id == publisher.Value) ? "checked" : "")
+                                                   id="publisher_@publisher.Value" />
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Filter -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4>
+                            <a href="#PriceCollapse" class="collapsed d-flex justify-content-between align-items-center" data-bs-toggle="collapse" aria-expanded="true" aria-controls="PriceCollapse">
+                                <span class="d-inline">Price</span>
+                                <i class="fas fa-chevron-up" aria-hidden="true"></i>
+                            </a>
+                        </h4>
+                        <div class="collapse show" id="PriceCollapse">
+                            <div class="mb-3">
+                                <label for="minPrice" class="form-label">Min Price</label>
+                                <input type="range" class="form-range" id="minPrice" name="MinPrice"
+                                       min="@Math.Floor(ViewBag.MinPrice)"
+                                       max="@Math.Floor(ViewBag.MaxPrice)"
+                                       value="@(string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["MinPrice"]) ? Math.Floor(ViewBag.MinPrice) : ViewContext.HttpContext.Request.Query["MinPrice"])" />
+                                <span id="minPriceValue">
+                                    @(string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["MinPrice"]) ? Math.Floor(ViewBag.MinPrice) : ViewContext.HttpContext.Request.Query["MinPrice"])
+                                </span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="maxPrice" class="form-label">Max Price</label>
+                                <input type="range" class="form-range" id="maxPrice" name="MaxPrice"
+                                       min="@Math.Ceiling(ViewBag.MinPrice)"
+                                       max="@Math.Ceiling(ViewBag.MaxPrice)"
+                                       value="@(string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["MaxPrice"]) ? Math.Ceiling(ViewBag.MaxPrice) : ViewContext.HttpContext.Request.Query["MaxPrice"])" />
+                                <span id="maxPriceValue">
+                                    @(string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["MaxPrice"]) ? Math.Ceiling(ViewBag.MaxPrice) : ViewContext.HttpContext.Request.Query["MaxPrice"])
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+
+
+
+        <!-- Book Display Section (Right Side) -->
+        <div class="col-12 col-md-9">
+            <form method="get" asp-action="GetAllBookWithSpecs" class="mb-4">
+                <div class="row align-items-center mb-3">
+                    <!-- Sort Dropdown -->
+                    <div class="col-12 col-md-6">
+                        <div class="dropdown d-flex align-items-center">
+                            <span class="me-2" style="width: 90px;">Sort By:</span>
+
+                            @if (!string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["search"]))
+                            {
+                                <input type="hidden" name="search" value="@ViewContext.HttpContext.Request.Query["search"]" />
+                            }
+
+                            @if (!string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["MinPrice"]))
+                            {
+                                <input type="hidden" name="MinPrice" value="@ViewContext.HttpContext.Request.Query["MinPrice"]" />
+                            }
+
+                            @if (!string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["MaxPrice"]))
+                            {
+                                <input type="hidden" name="MaxPrice" value="@ViewContext.HttpContext.Request.Query["MaxPrice"]" />
+                            }
+
+                            @if (!string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["PublisherIds"]))
+                            {
+                                <input type="hidden" name="PublisherIds" value="@ViewContext.HttpContext.Request.Query["PublisherIds"]" />
+                            }
+
+                            @if (!string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["CategoryIds"]))
+                            {
+                                <input type="hidden" name="CategoryIds" value="@ViewContext.HttpContext.Request.Query["CategoryIds"]" />
+                            }
+
+                            @if (!string.IsNullOrEmpty(ViewContext.HttpContext.Request.Query["AuthorIds"]))
+                            {
+                                <input type="hidden" name="AuthorIds" value="@ViewContext.HttpContext.Request.Query["AuthorIds"]" />
+                            }
+
+
+                            <select name="Sort" class="form-control" onchange="this.form.submit()" style="border-radius: 10px; border: 1px solid; background-color: white;">
+                                <option value="">Default Sort</option>
+                                <option value="BestSelling" selected="@(ViewContext.HttpContext.Request.Query["Sort"] == "BestSelling")">Best Selling</option>
+                                <option value="NewestArrivals" selected="@(ViewContext.HttpContext.Request.Query["Sort"] == "NewestArrivals")">Newest Arrivals</option>
+                                <option value="priceAsc" selected="@(ViewContext.HttpContext.Request.Query["Sort"] == "priceAsc")">Price: Low to High</option>
+                                <option value="priceDesc" selected="@(ViewContext.HttpContext.Request.Query["Sort"] == "priceDesc")">Price: High to Low</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Pagination Info -->
+                    <div class="col-12 col-md-6 text-md-end">
+                        @{
+                            var pageSize = Model.PageSize;
+                            var pageIndex = Model.PageIndex;
+                            var startIndex = (pageIndex - 1) * pageSize + 1;
+                            var endIndex = startIndex + Model.Data.Count() - 1;
+                            if (endIndex > Model.Count) endIndex = Model.Count;
+                        }
+                        <span>@startIndex – @endIndex of @Model.Count results</span>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Display Book Cards in a Grid -->
+            <div class="row">
+                @foreach (var item in Model.Data)
+                {
+                    <div class="col-6 col-md-6 col-lg-4 col-xl-3 mb-4">
+                        <div class="product-card shadow-sm">
+                            <!-- Book Cover Image -->
+                            <div class="card-banner img-holder" style="--width: 384; --height: 480; position: relative;">
+                                <img src="~/files/images/@item.Cover_Image" width="384" height="480" style="object-fit: contain;" loading="lazy" alt="@item.Title"
+                                     class="img-cover rounded">
+
+                                <!-- Stock Badge -->
+                                @if (item.Stock == 0)
+                                {
+                                    <span class="badge bg-danger text-white" style="position: absolute; top: 10px; left: 10px;">OUT OF STOCK</span>
+                                }
+                                else if (item.Stock > 10)
+                                {
+                                    <span class="badge bg-success text-white" style="position: absolute; top: 10px; left: 10px;">AVAILABLE</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-white" style="position: absolute; top: 10px; left: 10px;">@item.Stock Books Left</span>
+                                }
+
+                                <div class="card-action">
+                                    <!-- Quick View -->
+                                    <a class="action-btn" aria-label="quick view" title="Quick View" asp-action="Details" asp-route-id="@item.Book_ID">
+                                        <ion-icon name="eye-outline" aria-hidden="true"></ion-icon>
+                                    </a>
+
+                                <a class="action-btn cur-pointer" id="add-to-wishlist" aria-label="add to wishlist" title="Add to Wishlist"
+                                   onclick="AddToWish(@item.Book_ID)">
+                                    <ion-icon name="heart-outline" class="add-to-wishlist"
+                                              id="add-to-wishlist-@item.Book_ID" aria-hidden="true" data-Book_ID="@item.Book_ID"></ion-icon>
+                                </a>
+
+                                <a class="action-btn cur-pointer" id="add-to-cart" aria-label="add to cart" title="Add to Cart"
+                                   onclick="AddItem(@item.Book_ID)">
+                                    <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+                                </a>
+                                </div>
+                            </div>
+
+                            <!-- Book Details -->
+                            <div class="card-content mt-3">
+                            <h3>
+                                <a asp-action="Details" asp-route-id="@item.Book_ID" class="card-title fs-4" title="@item.Title">
+                                    @(item.Title.Length > 22 ? item.Title.Substring(0, 18) + "..." : item.Title)
+                                </a>
+                            </h3>
+
+
+
+                                <data class="card-price" value="@item.Price"><sup>EGP</sup>@item.Price</data>
+                                <span class="text-decoration-line-through fw-bold" value="@item.ActualPrice">EGP @item.ActualPrice</span>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+
+            <!-- Pagination -->
+            <div class="pagination mt-4 d-flex justify-content-center fw-bold" style="font-size: 2rem;">
+                <!-- Adjust font-size here -->
+                @if (Model.PageIndex > 1)
+                {
+                    <a asp-action="GetAllBookWithSpecs" asp-route-PageIndex="@(Model.PageIndex - 1)"
+                       asp-route-Sort="@ViewContext.HttpContext.Request.Query["Sort"]"
+                       asp-route-search="@ViewContext.HttpContext.Request.Query["search"]"
+                       asp-route-MinPrice="@ViewContext.HttpContext.Request.Query["MinPrice"]"
+                       asp-route-MaxPrice="@ViewContext.HttpContext.Request.Query["MaxPrice"]"
+                       asp-route-PublisherIds="@ViewContext.HttpContext.Request.Query["PublisherIds"]"
+                       asp-route-CategoryIds="@ViewContext.HttpContext.Request.Query["CategoryIds"]"
+                       asp-route-AuthorIds="@ViewContext.HttpContext.Request.Query["AuthorIds"]"
+                       class="link-secondary" style="margin-left: 15px;">&lt;</a>
+                }
+
+                @{
+                    var totalPages = (int)Math.Ceiling((double)Model.Count / Model.PageSize);
+                }
+
+                @if (totalPages > 1)
+                {
+                    // Display first page link
+                    <a asp-action="GetAllBookWithSpecs" asp-route-PageIndex="1"
+                       asp-route-Sort="@ViewContext.HttpContext.Request.Query["Sort"]"
+                       asp-route-search="@ViewContext.HttpContext.Request.Query["search"]"
+                       asp-route-MinPrice="@ViewContext.HttpContext.Request.Query["MinPrice"]"
+                       asp-route-MaxPrice="@ViewContext.HttpContext.Request.Query["MaxPrice"]"
+                       asp-route-PublisherIds="@ViewContext.HttpContext.Request.Query["PublisherIds"]"
+                       asp-route-CategoryIds="@ViewContext.HttpContext.Request.Query["CategoryIds"]"
+                       asp-route-AuthorIds="@ViewContext.HttpContext.Request.Query["AuthorIds"]"
+                       class="link @(Model.PageIndex == 1 ? "text-primary" : "text-secondary")" style="margin-left: 15px;">1</a>
+
+                    // Display previous dots if current page is greater than 5
+                    if (Model.PageIndex > 5)
+                    {
+                        <span style="margin-left: 15px;">...</span>
+                    }
+
+                    // Display the current page and surrounding pages
+                    for (var i = Math.Max(2, Model.PageIndex - 4); i <= Math.Min(totalPages - 1, Model.PageIndex + 4); i++)
+                    {
+                        <a asp-action="GetAllBookWithSpecs" asp-route-PageIndex="@i"
+                           asp-route-Sort="@ViewContext.HttpContext.Request.Query["Sort"]"
+                           asp-route-search="@ViewContext.HttpContext.Request.Query["search"]"
+                           asp-route-MinPrice="@ViewContext.HttpContext.Request.Query["MinPrice"]"
+                           asp-route-MaxPrice="@ViewContext.HttpContext.Request.Query["MaxPrice"]"
+                           asp-route-PublisherIds="@ViewContext.HttpContext.Request.Query["PublisherIds"]"
+                           asp-route-CategoryIds="@ViewContext.HttpContext.Request.Query["CategoryIds"]"
+                           asp-route-AuthorIds="@ViewContext.HttpContext.Request.Query["AuthorIds"]"
+                           class="link @(Model.PageIndex == i ? "text-primary" : "text-secondary")" style="margin-left: 15px;">@i</a>
+                    }
+
+                    // Display next dots if current page is less than totalPages - 4
+                    if (Model.PageIndex < totalPages - 4)
+                    {
+                        <span style="margin-left: 15px;">...</span>
+                    }
+
+                    // Display last page link
+                    if (totalPages > 1 && Model.PageIndex < totalPages - 1)
+                    {
+                        <a asp-action="GetAllBookWithSpecs" asp-route-PageIndex="@totalPages"
+                           asp-route-Sort="@ViewContext.HttpContext.Request.Query["Sort"]"
+                           asp-route-search="@ViewContext.HttpContext.Request.Query["search"]"
+                           asp-route-MinPrice="@ViewContext.HttpContext.Request.Query["MinPrice"]"
+                           asp-route-MaxPrice="@ViewContext.HttpContext.Request.Query["MaxPrice"]"
+                           asp-route-PublisherIds="@ViewContext.HttpContext.Request.Query["PublisherIds"]"
+                           asp-route-CategoryIds="@ViewContext.HttpContext.Request.Query["CategoryIds"]"
+                           asp-route-AuthorIds="@ViewContext.HttpContext.Request.Query["AuthorIds"]"
+                           class="link @(Model.PageIndex == totalPages ? "text-primary" : "text-secondary")" style="margin-left: 15px;">@totalPages</a>
+                    }
+                }
+
+                @if (Model.PageIndex < totalPages)
+                {
+                    <a asp-action="GetAllBookWithSpecs" asp-route-PageIndex="@(Model.PageIndex + 1)"
+                       asp-route-Sort="@ViewContext.HttpContext.Request.Query["Sort"]"
+                       asp-route-search="@ViewContext.HttpContext.Request.Query["search"]"
+                       asp-route-MinPrice="@ViewContext.HttpContext.Request.Query["MinPrice"]"
+                       asp-route-MaxPrice="@ViewContext.HttpContext.Request.Query["MaxPrice"]"
+                       asp-route-PublisherIds="@ViewContext.HttpContext.Request.Query["PublisherIds"]"
+                       asp-route-CategoryIds="@ViewContext.HttpContext.Request.Query["CategoryIds"]"
+                       asp-route-AuthorIds="@ViewContext.HttpContext.Request.Query["AuthorIds"]"
+                       class="link-secondary" style="margin-left: 15px;">&gt;</a>
+                }
+            </div>
+
+
+        </div>
+    </div>
+
+
+<!-- jQuery for Add to Cart -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+@section Scripts {
+    <script>
+        function AddItem(Book_ID) {
+            $.ajax({
+                url: '/Cart_Item/addBookToCart_items',
+                type: 'POST',
+                data: { Book_ID: Book_ID },
+                success: function (response) {
+                    if (response.success) {
+                        console.log(response);
+                    } else {
+                        console.log('failed');
+                    }
+                },
+                error: function () {
+                    alert("Failed to update quantity.");
+                }
+            });
+        }
+
+        function AddToWish(Book_ID) {
+
+            $.ajax({
+                url: '/FavouriteBooks/AddBookToFavouriteList',
+                type: 'POST',
+                data: { Book_ID: Book_ID },
+                success: function (response) {
+
+                    if (response.massage == "added") {
+                        $(`#add-to-wishlist-${Book_ID}`).addClass('text-danger');
+                        $(`#add-to-wishlist-${Book_ID}`).attr('name', "heart");
+                    } else {
+                        $(`#add-to-wishlist-${Book_ID}`).removeClass('text-danger');
+                        $(`#add-to-wishlist-${Book_ID}`).attr('name', "heart-outline");
+                    }
+                },
+
+                error: function () {
+                    console.log("Not Authorize");
+                }
+            });
+        };
+        ChecKHeart();
+        function ChecKHeart() {
+            $('.add-to-wishlist').each(function (e) {
+                var Book_ID = $(this).data("book_id");
+                $.ajax({
+                    url: '/FavouriteBooks/CheckFavouriteForHeartDesign',
+                    type: 'POST',
+                    data: { Book_ID: Book_ID },
+                    success: function (response) {
+
+                        if (response.massage == "added") {
+                            $(`#add-to-wishlist-${Book_ID}`).addClass('text-danger');
+                            $(`#add-to-wishlist-${Book_ID}`).attr('name', "heart");
+                            console.log("added")
+                        }
+                    },
+
+                    error: function () {
+                        console.log("Not Authorize");
+                    }
+                });
+            })
+
+        };
+
+        $(document).ready(function () {
+            $('.collapse').on('show.bs.collapse', function () {
+                $(this).prev().find('.fas').removeClass('fa-chevron-down').addClass('fa-chevron-up');
+            }).on('hide.bs.collapse', function () {
+                $(this).prev().find('.fas').removeClass('fa-chevron-up').addClass('fa-chevron-down');
+            });
+        });
+
+
+        document.getElementById('minPrice').addEventListener('input', function () {
+            document.getElementById('minPriceValue').textContent = this.value;
+        });
+
+        document.getElementById('maxPrice').addEventListener('input', function () {
+            document.getElementById('maxPriceValue').textContent = this.value;
+        });
+
+
+        function filterItems(searchInputId, itemSelector) {
+            const searchInput = document.getElementById(searchInputId).value.toLowerCase();
+            const items = document.querySelectorAll(itemSelector);
+            let checkedItems = [];
+            let uncheckedItems = [];
+
+            items.forEach(item => {
+                const isChecked = item.querySelector(".form-check-input").checked;
+                const itemName = item.querySelector(".form-check-label").textContent.toLowerCase();
+
+                if (itemName.includes(searchInput)) {
+                    if (isChecked) {
+                        checkedItems.push(item);
+                    } else {
+                        uncheckedItems.push(item);
+                    }
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+
+            let displayedCount = 0;
+            [...checkedItems, ...uncheckedItems].forEach(item => {
+                if (displayedCount < 10) {
+                    item.style.display = "";
+                    displayedCount++;
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        }
+
+        window.onload = function () {
+            filterItems('authorSearch', '.author-item');
+            filterItems('categorySearch', '.category-item');
+            filterItems('publisherSearch', '.publisher-item');
+        };
+
+        function clearFilters() {
+            // Prevent default anchor behavior
+            event.preventDefault();
+
+            // Clear all checkboxes
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            // Reset range inputs to their default values
+            const minPriceInput = document.getElementById('minPrice');
+            const maxPriceInput = document.getElementById('maxPrice');
+            minPriceInput.value = minPriceInput.min; // Reset to minimum value
+            maxPriceInput.value = maxPriceInput.max; // Reset to maximum value
+
+            // Update displayed values
+            document.getElementById('minPriceValue').textContent = minPriceInput.value;
+            document.getElementById('maxPriceValue').textContent = maxPriceInput.value;
+
+            // Optionally, you can submit the form after clearing filters
+            document.getElementById('filterForm').submit();
+        }
+    </script>
+}

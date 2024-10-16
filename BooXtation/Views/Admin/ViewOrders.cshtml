@@ -1,0 +1,71 @@
+﻿@model IEnumerable<BookXtation.DAL.Models.Data.Order>
+
+@{
+    ViewData["Title"] = "List of Orders";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container">
+    <h2 class="h2 section-title">Order Collections</h2>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i> Order Collections
+        </div>
+        <div class="card-body">
+            <table id="datatablesSimple" class="display table table-striped">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Order Date</th>
+                        <th>Total Amount</th>
+                        <th>Order Status</th>
+                        <th>Payment Status</th>
+                        <th>Payment Method</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>@order.Order_ID</td>
+                            <td>@order.Customer.FirstName @order.Customer.LastName</td>
+
+                            <td>@order.OrderDate.ToString("MM/dd/yyyy")</td>
+                            <td>$@order.TotalAmount</td>
+                            <td>
+                                @order.OrderStatus
+                            </td>
+                            <td>
+                                @order.PaymentStatus
+                            </td>
+                            <td>
+                                @order.Payment.PaymentMethod
+                            </td>
+                            <td>
+                                <a class="btn btn-info btn-sm" asp-controller="Admin" asp-action="OrderDetails" asp-route-id="@order.Order_ID">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Include jQuery and DataTable JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#datatablesSimple').DataTable({
+                "searching": true, // Enables search functionality
+                "paging": true,    // Enables pagination
+                "ordering": true   // Enables column sorting
+            });
+        });
+    </script>
+}

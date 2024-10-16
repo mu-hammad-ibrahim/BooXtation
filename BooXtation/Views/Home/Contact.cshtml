@@ -1,0 +1,49 @@
+﻿@{
+    Layout = "~/Views/Shared/_DefaultLayout.cshtml";
+    ViewData["Title"] = "Contact Us";
+}
+
+<h1 class="my-5 mainTitle">Contact Us</h1>
+
+<p class="fw-semibold">We'd love to hear from you! Whether you have a question about our services, need support, or just want to give feedback, feel free to reach out using the information below:</p>
+
+<h2 class="privacy-text">1. Contact Information</h2>
+<div class="mx-5">
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><strong>Email:</strong> support@booxtation.com</li>
+        <li class="list-group-item"><strong>Phone:</strong> +20 123 456 7890</li>
+        <li class="list-group-item"><strong>Address:</strong> Cairo, Egypt</li>
+    </ul>
+</div>
+
+<h2 class="privacy-text">2. Business Hours</h2>
+<div class="mx-5">
+    <p class="fs-4 mt-4 mb-1 fw-bold">Our team is available during the following business hours:</p>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Monday to Friday: 9:00 AM - 6:00 PM (GMT+2)</li>
+        <li class="list-group-item">Saturday: 10:00 AM - 2:00 PM (GMT+2)</li>
+        <li class="list-group-item">Sunday: Closed</li>
+    </ul>
+</div>
+
+<h2 class="privacy-text">3. Send Us a Message</h2>
+<div class="mx-5">
+    <p class="fs-4 mt-4 mb-1 fw-bold">Alternatively, you can send us a message directly using the form below:</p>
+    <form method="post" action="/Contact/Send">
+        <div class="mb-3">
+            <label for="name" class="form-label fw-semibold">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label fw-semibold">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="message" class="form-label fw-semibold">Message</label>
+            <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Message</button>
+    </form>
+</div>
+
+<p class="privacy-text mt-3 fw-semibold">Thank you for choosing BooXtation! We're here to assist you.</p>

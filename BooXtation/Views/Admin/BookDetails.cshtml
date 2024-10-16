@@ -1,0 +1,74 @@
+﻿@model Book
+@{
+    ViewData["Title"] = "Book details";
+}
+@{
+    ViewData["Title"] = "List of Books";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row">
+    <div class="col-md-8 offset-2">
+        <div class="card mb-12">
+            <div class="row g-0">
+                <div class="col-md-12">
+                    <div class="card-header text-white bg-info">
+                        <p class="card-text">
+                            <h5 class="card-title">
+                                @Model.Title
+                            </h5>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <img src="~/files/images/@Model.Cover_Image" width="100%" alt="@Model.Title">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <p class="card-text">@Model.Summary</p>
+                        <p class="card-text">
+                            <b>Publisher: </b>
+                            <a asp-controller="Publisher" asp-action="Details" asp-route-id="@Model.Publisher.Publisher_ID">
+                                @Model.Publisher.Name
+                            </a>
+                        </p>
+                        <p class="card-text"><b>Category: </b>@Model.Category.Name</p>
+                        <p class="card-text"><b>Language: </b>@Model.Language</p>
+                        <p class="card-text"><b>publish Date </b>@Model.Publish_Date.ToString()</p>
+                        <p class="card-text ">
+                            <b>Status: </b>
+                            @if (Model.Stock>10)
+                            {
+                                <span class="badge bg-success text-white">AVAILABLE</span>
+                            }
+                            else if (Model.Stock < 10 )
+                            {
+                                <span class="badge bg-danger text-white">Almost Sold</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-primary text-white">Sold Out</span>
+                            }
+                        </p>
+                        <p class="card-text">
+                            <b>Auther: </b>
+
+                                <span> <a asp-controller="Auther" asp-action="Details" asp-route-id="">@Model.Author.Name</a></span>
+
+                        </p>
+
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card-footer">
+                        <p class="card-text">
+                            <a class="btn btn-outline-primary float-right" asp-action="ViewBooks">
+                                Back to List
+                            </a>
+                            <a class="btn btn-danger text-white" asp-controller="book" asp-action="delete" asp-route-id="@Model.Book_ID"> Delete </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
