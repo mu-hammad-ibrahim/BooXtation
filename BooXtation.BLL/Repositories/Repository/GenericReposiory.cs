@@ -45,7 +45,7 @@ namespace BooXtation.BLL.Repositories.Repository
             if (typeof(T) == typeof(Book)) { 
                 return  (IQueryable<T>)  _dbcontext.Set<Book>().Include(B => B.Publisher)
                                                                .Include(B => B.Author)
-                                                               .Include(B => B.Category).AsNoTracking().OrderByDescending(B => B.Book_ID).Take(1000);
+                                                               .Include(B => B.Category).AsNoTracking();
             }
             else if ((typeof(T) == typeof(Author)))
             {
