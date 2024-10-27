@@ -72,7 +72,7 @@ To get started with BooXtation locally, follow these steps:
 
 ## Demo
 
-- Check out the demo video [here](link-to-your-demo-video).
+- Check out the demo video [here](https://drive.google.com/file/d/1L6lZ36MLTaOkiCkdSi76M2qDyeuWJGGm/view?usp=sharing).
 
 ## Contributing
 
@@ -95,7 +95,7 @@ We welcome contributions! If you'd like to contribute to BooXtation, please fork
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
+This project is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License](LICENSE.md). You are free to share and adapt this work non-commercially, provided you give appropriate credit.
 
 ## Acknowledgments
 
