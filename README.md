@@ -38,7 +38,7 @@ To get started with BooXtation locally, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Muhammad-Ibrahim-Dev/BooXtation.git
+   git clone https://github.com/mu-hammad-ibrahim/BooXtation.git
    ```
 
 2. **Navigate to the project directory:**
