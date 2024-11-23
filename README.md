@@ -68,7 +68,7 @@ To get started with BooXtation locally, follow these steps:
 
 ## GitHub Repository
 
-- [GitHub Repository Link](https://github.com/Muhammad-Ibrahim-Dev/BooXtation)
+- [GitHub Repository Link](https://github.com/mu-hammad-ibrahim/BooXtation)
 
 ## Demo
 
