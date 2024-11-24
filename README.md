@@ -13,6 +13,8 @@ BooXtation is a robust online bookstore management system developed as part of t
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
 
+---
+
 ## Features
 
 - **3-Tier Architecture:** Separates Presentation, Business Logic, and Data Access layers for modularity and scalability.
@@ -21,6 +23,10 @@ BooXtation is a robust online bookstore management system developed as part of t
 - **Email Integration with MailKit:** Efficient notifications for order confirmations and customer communications.
 - **Comprehensive Admin Dashboard:** Full control over inventory, orders, user management, and analytics using Chart.js.
 - **Customer-Centric Features:** Wishlist, review, and rating options for an improved shopping experience.
+
+[🔝 Back to top](#table-of-contents)
+
+---
 
 ## Technologies Used
 
@@ -31,6 +37,10 @@ BooXtation is a robust online bookstore management system developed as part of t
 - **Real-time Updates:** AJAX
 - **Payment Processing:** Stripe
 - **Email Services:** MailKit
+
+[🔝 Back to top](#table-of-contents)
+
+---
 
 ## Installation
 
@@ -61,18 +71,34 @@ To get started with BooXtation locally, follow these steps:
    dotnet run
    ```
 
+[🔝 Back to top](#table-of-contents)
+
+---
+
 ## Usage
 
 - Open your web browser and navigate to `http://localhost:5000` to access the BooXtation application.
 - Create an account, browse books, manage inventory, and enjoy the features available!
 
+[🔝 Back to top](#table-of-contents)
+
+---
+
 ## GitHub Repository
 
 - [GitHub Repository Link](https://github.com/mu-hammad-ibrahim/BooXtation)
 
+[🔝 Back to top](#table-of-contents)
+
+---
+
 ## Demo
 
 - Check out the demo video [here](https://drive.google.com/file/d/1L6lZ36MLTaOkiCkdSi76M2qDyeuWJGGm/view?usp=sharing).
+
+[🔝 Back to top](#table-of-contents)
+
+---
 
 ## Contributing
 
@@ -93,10 +119,21 @@ We welcome contributions! If you'd like to contribute to BooXtation, please fork
    ```
 5. Open a pull request.
 
+[🔝 Back to top](#table-of-contents)
+
+---
+
 ## License
 
 This project is licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License](LICENSE.md). You are free to share and adapt this work non-commercially, provided you give appropriate credit.
 
+[🔝 Back to top](#table-of-contents)
+
+---
+
 ## Acknowledgments
 
 - Special thanks to my teammates Mahmoud Mohamed, Hadeer Ragab, Mina Nader, and Noha Nasser for their hard work and to Mohamed Agour for his invaluable guidance during this project.
+
+[🔝 Back to top](#table-of-contents) 
+
